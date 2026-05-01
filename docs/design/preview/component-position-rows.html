@@ -1,0 +1,29 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .panel { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: var(--r-md); overflow: hidden; }
+  .head, .row { display: grid; grid-template-columns: 90px 70px 1fr 1fr 1fr 1fr; align-items: center; padding: 0 16px; height: 36px; gap: 12px; font-size: var(--t-sm); }
+  .head { background: transparent; color: var(--fg-3); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; height: 30px; border-bottom: 1px solid var(--border-1); }
+  .row { border-bottom: 1px solid var(--border-1); }
+  .row:last-child { border-bottom: 0; }
+  .row:hover { background: var(--bg-3); }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.005em; }
+  .sym { font-weight: 600; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: var(--r-xs); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; height: 18px; }
+  .b-long { background: var(--profit-bg); color: var(--profit); }
+  .b-short { background: var(--loss-bg); color: var(--loss); }
+  .b-warn { background: var(--warn-bg); color: var(--warn); }
+  .right { text-align: right; }
+  .arrow { font-family: var(--font-mono); }
+</style></head>
+<body>
+<div class="panel">
+  <div class="head"><div>symbol</div><div>side</div><div class="right">entry</div><div class="right">mark</div><div class="right">pnl</div><div class="right">liq dist</div></div>
+  <div class="row"><div class="sym">BTC</div><div><span class="badge b-long"><span class="arrow">↑</span> long 5×</span></div><div class="num right">64,210.0</div><div class="num right">65,418.5</div><div class="num right" style="color:var(--profit)">+$842.10</div><div class="num right">12.4%</div></div>
+  <div class="row"><div class="sym">ETH</div><div><span class="badge b-short"><span class="arrow">↓</span> short 3×</span></div><div class="num right">3,148.20</div><div class="num right">3,212.04</div><div class="num right" style="color:var(--loss)">−$96.40</div><div class="num right">18.0%</div></div>
+  <div class="row"><div class="sym">SOL</div><div><span class="badge b-long"><span class="arrow">↑</span> long 10×</span></div><div class="num right">142.80</div><div class="num right">138.21</div><div class="num right" style="color:var(--loss)">−$214.20</div><div class="num right" style="color:var(--warn)">8.4%</div></div>
+</div>
+</body></html>

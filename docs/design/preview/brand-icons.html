@@ -1,0 +1,28 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 22px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .panel { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: var(--r-md); padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .lab { font: 500 var(--t-2xs)/1 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 14px; }
+  .ico { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--fg-2); }
+  .ico .name { font: 400 var(--t-2xs)/1 var(--font-mono); color: var(--fg-3); }
+  .ico svg { stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+</style></head>
+<body>
+<div class="panel">
+  <span class="lab">iconography · lucide · 1.6 stroke · 20 px</span>
+  <div class="grid">
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h7v7"/></svg><span class="name">trend-up</span></div>
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 7l6 6 4-4 7 7"/><path d="M14 16h7v-7"/></svg><span class="name">trend-down</span></div>
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l3 2"/></svg><span class="name">clock</span></div>
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/></svg><span class="name">activity</span></div>
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span class="name">dollar</span></div>
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"/></svg><span class="name">shield</span></div>
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span class="name">alert</span></div>
+    <div class="ico"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="name">search</span></div>
+  </div>
+</div>
+</body></html>

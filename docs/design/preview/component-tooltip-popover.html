@@ -1,0 +1,66 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 22px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+  .lab { font: 500 var(--t-2xs)/1 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; margin-bottom: 8px; display: block; }
+  .tip { position: relative; display: inline-block; }
+  .tip-body {
+    background: rgba(7,10,13,0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-sm);
+    padding: 10px 12px;
+    box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.5);
+    font: 400 12px/1.4 var(--font-sans);
+    color: var(--fg-1);
+    width: 220px;
+  }
+  .tip-body .row { display: flex; justify-content: space-between; gap: 12px; }
+  .tip-body .row + .row { margin-top: 4px; }
+  .tip-body .k { color: var(--fg-3); }
+  .tip-body .v { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .pop {
+    background: var(--bg-2);
+    border: 1px solid var(--border-2);
+    border-radius: var(--r-md);
+    padding: 12px;
+    box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.5);
+    width: 240px;
+  }
+  .pop h5 { margin: 0 0 10px; font: 500 12px/1 var(--font-sans); color: var(--fg-2); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .pop ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .pop li { padding: 6px 8px; border-radius: 3px; font: 500 13px/1 var(--font-sans); color: var(--fg-1); display: flex; justify-content: space-between; cursor: pointer; }
+  .pop li:hover { background: var(--bg-3); }
+  .pop li.is-active { background: var(--accent-bg); color: var(--accent); }
+  .pop li .meta { font-family: var(--font-mono); color: var(--fg-3); font-size: 11px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+</style></head>
+<body>
+<div class="row">
+  <div>
+    <span class="lab">tooltip · on-hover row detail</span>
+    <div class="tip-body">
+      <div class="row" style="display:flex; justify-content: space-between;"><span class="k">BTC long 5×</span><span class="v" style="color:var(--profit)">+$842.10</span></div>
+      <div class="row"><span class="k">entry</span><span class="v">64,210.00</span></div>
+      <div class="row"><span class="k">mark</span><span class="v">65,418.50</span></div>
+      <div class="row"><span class="k">liq</span><span class="v" style="color:var(--warn)">58,210.0 · 12.4%</span></div>
+      <div class="row"><span class="k">opened</span><span class="v">4h ago</span></div>
+    </div>
+  </div>
+  <div>
+    <span class="lab">popover · symbol picker</span>
+    <div class="pop">
+      <h5>switch symbol</h5>
+      <ul>
+        <li class="is-active"><span>BTC</span><span class="meta">65,418.50</span></li>
+        <li><span>ETH</span><span class="meta">3,212.04</span></li>
+        <li><span>SOL</span><span class="meta">138.21</span></li>
+        <li><span>ARB</span><span class="meta">1.184</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body></html>

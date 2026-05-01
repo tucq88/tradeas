@@ -1,0 +1,24 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .sw { border-radius: var(--r-sm); border: 1px solid var(--border-1); overflow: hidden; }
+  .sw .fill { height: 56px; }
+  .sw .meta { background: var(--bg-1); padding: 7px 9px; display: flex; flex-direction: column; gap: 2px; }
+  .sw .name { font-size: var(--t-xs); color: var(--fg-1); font-weight: 500; }
+  .sw .hex { font-family: var(--font-mono); font-size: var(--t-2xs); color: var(--fg-3); letter-spacing: 0; }
+  h4 { margin: 0 0 10px; color: var(--fg-3); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+</style></head>
+<body>
+<h4>surfaces · luminance ramp from page → raised</h4>
+<div class="grid">
+  <div class="sw"><div class="fill" style="background:#070a0d"></div><div class="meta"><span class="name">bg-inset</span><span class="hex">#070A0D</span></div></div>
+  <div class="sw"><div class="fill" style="background:#0a0d10"></div><div class="meta"><span class="name">bg-0</span><span class="hex">#0A0D10</span></div></div>
+  <div class="sw"><div class="fill" style="background:#0f1318"></div><div class="meta"><span class="name">bg-1</span><span class="hex">#0F1318</span></div></div>
+  <div class="sw"><div class="fill" style="background:#151a21"></div><div class="meta"><span class="name">bg-2</span><span class="hex">#151A21</span></div></div>
+  <div class="sw"><div class="fill" style="background:#1c222b"></div><div class="meta"><span class="name">bg-3</span><span class="hex">#1C222B</span></div></div>
+</div>
+</body></html>

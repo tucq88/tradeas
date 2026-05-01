@@ -1,0 +1,26 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; align-items: end; }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .bar { background: var(--accent); border-radius: 2px; width: 100%; }
+  .n { font: 500 var(--t-2xs)/1 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .px { font: 500 var(--t-xs)/1 var(--font-mono); color: var(--fg-2); }
+  h4 { margin: 0 0 14px; color: var(--fg-3); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+</style></head>
+<body>
+<h4>spacing · 4px base · s-1 → s-12</h4>
+<div class="grid">
+  <div class="step"><div class="bar" style="height:4px;"></div><div class="n">s-1</div><div class="px">4</div></div>
+  <div class="step"><div class="bar" style="height:8px;"></div><div class="n">s-2</div><div class="px">8</div></div>
+  <div class="step"><div class="bar" style="height:12px;"></div><div class="n">s-3</div><div class="px">12</div></div>
+  <div class="step"><div class="bar" style="height:16px;"></div><div class="n">s-4</div><div class="px">16</div></div>
+  <div class="step"><div class="bar" style="height:20px;"></div><div class="n">s-5</div><div class="px">20</div></div>
+  <div class="step"><div class="bar" style="height:24px;"></div><div class="n">s-6</div><div class="px">24</div></div>
+  <div class="step"><div class="bar" style="height:32px;"></div><div class="n">s-8</div><div class="px">32</div></div>
+  <div class="step"><div class="bar" style="height:48px;"></div><div class="n">s-12</div><div class="px">48</div></div>
+</div>
+</body></html>

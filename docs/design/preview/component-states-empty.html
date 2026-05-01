@@ -1,0 +1,37 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .panel { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: var(--r-md); padding: 16px; min-height: 110px; display: flex; align-items: center; justify-content: center; }
+  .empty { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--fg-3); text-align: center; }
+  .empty .ico { width: 28px; height: 28px; border-radius: 999px; border: 1px dashed var(--border-2); display: flex; align-items: center; justify-content: center; font: 500 14px/1 var(--font-mono); color: var(--fg-3); }
+  .empty .t { font: 500 13px/1 var(--font-sans); color: var(--fg-2); }
+  .empty .s { font: 400 11px/1.5 var(--font-sans); color: var(--fg-3); }
+  .empty button { margin-top: 6px; background: transparent; border: 1px solid var(--border-1); color: var(--fg-2); font: 500 11px/1 var(--font-sans); padding: 6px 10px; border-radius: var(--r-xs); cursor: pointer; }
+  .err .ico { border-color: rgba(255,91,91,0.4); color: var(--loss); }
+  .err .t { color: var(--loss); }
+  h4 { margin: 0 0 10px; color: var(--fg-3); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+</style></head>
+<body>
+<h4>empty · error · idle states</h4>
+<div class="grid">
+  <div class="panel">
+    <div class="empty">
+      <div class="ico">·</div>
+      <div class="t">no open positions</div>
+      <div class="s">size up a trade in the calculator</div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="empty err">
+      <div class="ico">!</div>
+      <div class="t">connection lost</div>
+      <div class="s">last sync 12:48:04 · retrying in 4s</div>
+      <button>retry now</button>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,41 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .sem {
+    border-radius: var(--r-md);
+    border: 1px solid var(--border-1);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .sem .swatch { padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+  .sem .swatch .h { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--t-lg); font-weight: 600; }
+  .sem .swatch .l { font-size: var(--t-2xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; opacity: 0.8; }
+  .sem .meta { padding: 8px 10px; background: var(--bg-1); display: flex; justify-content: space-between; font-size: var(--t-xs); }
+  .sem .meta .hex { font-family: var(--font-mono); color: var(--fg-3); }
+  h4 { margin: 0 0 10px; color: var(--fg-3); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+</style></head>
+<body>
+<h4>semantic · profit / loss / warn / neutral</h4>
+<div class="grid">
+  <div class="sem">
+    <div class="swatch" style="background:#0f2417;color:#2ecc71;"><span class="l">profit</span><span class="h">+4.20%</span></div>
+    <div class="meta"><span>--profit</span><span class="hex">#2ECC71</span></div>
+  </div>
+  <div class="sem">
+    <div class="swatch" style="background:#2a1212;color:#ff5b5b;"><span class="l">loss</span><span class="h">−2.84%</span></div>
+    <div class="meta"><span>--loss</span><span class="hex">#FF5B5B</span></div>
+  </div>
+  <div class="sem">
+    <div class="swatch" style="background:#2a1f0a;color:#f5a524;"><span class="l">warn · near liq</span><span class="h">8.4%</span></div>
+    <div class="meta"><span>--warn</span><span class="hex">#F5A524</span></div>
+  </div>
+  <div class="sem">
+    <div class="swatch" style="background:#1a2028;color:#8b95a3;"><span class="l">neutral · flat</span><span class="h">0.00%</span></div>
+    <div class="meta"><span>--neutral</span><span class="hex">#8B95A3</span></div>
+  </div>
+</div>
+</body></html>

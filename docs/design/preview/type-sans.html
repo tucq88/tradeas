@@ -1,0 +1,22 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 24px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .row { display: grid; grid-template-columns: 110px 1fr; gap: 18px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--border-1); }
+  .row:last-child { border-bottom: 0; }
+  .meta { font: 500 var(--t-2xs)/1.4 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .meta .px { display: block; font-family: var(--font-mono); letter-spacing: 0; text-transform: none; color: var(--fg-2); margin-top: 4px; }
+  .specimen { color: var(--fg-1); font-family: var(--font-sans); letter-spacing: var(--tracking-tight); }
+</style></head>
+<body>
+<div class="stack">
+  <div class="row"><div class="meta">h1 hero<span class="px">600 · 32 / 1.1</span></div><div class="specimen" style="font:600 32px/1.1 var(--font-sans); letter-spacing:-0.02em;">portfolio overview</div></div>
+  <div class="row"><div class="meta">h2 metric<span class="px">600 · 24 / 1.1</span></div><div class="specimen" style="font:600 24px/1.1 var(--font-sans); letter-spacing:-0.01em;">open positions</div></div>
+  <div class="row"><div class="meta">h3 panel<span class="px">600 · 18 / 1.25</span></div><div class="specimen" style="font:600 18px/1.25 var(--font-sans);">pre-trade calculator</div></div>
+  <div class="row"><div class="meta">body<span class="px">400 · 13 / 1.45</span></div><div class="specimen" style="font:400 13px/1.45 var(--font-sans); color:var(--fg-2);">long position on BTC opened 4 hours ago — currently in profit</div></div>
+  <div class="row"><div class="meta">caption<span class="px">500 · 10 / 1 · caps</span></div><div class="specimen" style="font:500 10px/1 var(--font-sans); letter-spacing:0.08em; text-transform:uppercase; color:var(--fg-3);">unrealized pnl · 24h</div></div>
+</div>
+</body></html>

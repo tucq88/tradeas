@@ -1,0 +1,26 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .panel { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: var(--r-md); padding: 16px; }
+  .row { display: grid; grid-template-columns: 60px 100px 1fr 1fr 80px; gap: 12px; align-items: center; padding: 6px 0; }
+  .skel { height: 12px; border-radius: 3px; background: linear-gradient(90deg, var(--bg-2) 0%, var(--bg-3) 50%, var(--bg-2) 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  @keyframes shimmer { 0%{background-position: 200% 0} 100%{background-position: -200% 0} }
+  .row > div:nth-child(1) { width: 32px; }
+  .row > div:nth-child(2) { width: 70px; }
+  h4 { margin: 0 0 10px; color: var(--fg-3); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .pulse { display: inline-block; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 0 0 rgba(91,157,255,0.6); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(91,157,255,0.5)} 70%{box-shadow:0 0 0 6px rgba(91,157,255,0)} 100%{box-shadow:0 0 0 0 rgba(91,157,255,0)} }
+  .head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font: 500 13px/1 var(--font-sans); color: var(--fg-2); }
+</style></head>
+<body>
+<h4>loading · skeletons + live indicator</h4>
+<div class="panel">
+  <div class="head"><span class="pulse"></span><span>fetching positions…</span></div>
+  <div class="row"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  <div class="row"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  <div class="row"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+</div>
+</body></html>

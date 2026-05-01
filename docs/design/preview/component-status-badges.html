@@ -1,0 +1,33 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 24px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .lab { width: 80px; font: 500 var(--t-2xs)/1 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border-radius: var(--r-xs); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; height: 20px; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 999px; display: inline-block; }
+  .b-open { background: var(--profit-bg); color: var(--profit); }
+  .b-open .dot { background: var(--profit); }
+  .b-closed { background: var(--bg-3); color: var(--fg-3); }
+  .b-closed .dot { background: var(--fg-3); }
+  .b-wip { background: var(--accent-bg); color: var(--accent); }
+  .b-wip .dot { background: var(--accent); }
+  .b-done { background: var(--bg-3); color: var(--fg-1); border: 1px solid var(--border-2); }
+  .b-done .dot { background: var(--fg-2); }
+  .b-warn { background: var(--warn-bg); color: var(--warn); }
+  .b-warn .dot { background: var(--warn); }
+  .b-loss { background: var(--loss-bg); color: var(--loss); }
+  .b-loss .dot { background: var(--loss); }
+  .b-flat { background: var(--neutral-bg); color: var(--neutral); }
+  .b-flat .dot { background: var(--neutral); }
+</style></head>
+<body>
+<div class="stack">
+  <div class="row"><div class="lab">positions</div><span class="badge b-open"><span class="dot"></span>open</span><span class="badge b-closed"><span class="dot"></span>closed</span><span class="badge b-warn"><span class="dot"></span>near liq</span><span class="badge b-flat"><span class="dot"></span>flat</span></div>
+  <div class="row"><div class="lab">workflow</div><span class="badge b-wip"><span class="dot"></span>wip</span><span class="badge b-done"><span class="dot"></span>done</span></div>
+  <div class="row"><div class="lab">pnl</div><span class="badge b-open"><span class="dot"></span>profit</span><span class="badge b-loss"><span class="dot"></span>loss</span><span class="badge b-flat"><span class="dot"></span>break-even</span></div>
+</div>
+</body></html>

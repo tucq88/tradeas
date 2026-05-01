@@ -1,0 +1,24 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .demo { background: var(--bg-2); border: 1px solid var(--border-1); aspect-ratio: 1.4 / 1; display: flex; align-items: flex-end; padding: 10px; }
+  .lab { display: flex; flex-direction: column; gap: 2px; }
+  .n { font: 500 var(--t-2xs)/1 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .px { font: 500 var(--t-xs)/1 var(--font-mono); color: var(--fg-2); }
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  h4 { margin: 0 0 14px; color: var(--fg-3); font: 500 var(--t-2xs)/1 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+</style></head>
+<body>
+<h4>radii · 3 → 16 px</h4>
+<div class="row">
+  <div class="cell"><div class="demo" style="border-radius:3px;"><span class="lab"><span class="n">xs</span><span class="px">3</span></span></div></div>
+  <div class="cell"><div class="demo" style="border-radius:5px;"><span class="lab"><span class="n">sm</span><span class="px">5</span></span></div></div>
+  <div class="cell"><div class="demo" style="border-radius:8px;"><span class="lab"><span class="n">md</span><span class="px">8</span></span></div></div>
+  <div class="cell"><div class="demo" style="border-radius:12px;"><span class="lab"><span class="n">lg</span><span class="px">12</span></span></div></div>
+  <div class="cell"><div class="demo" style="border-radius:16px;"><span class="lab"><span class="n">xl</span><span class="px">16</span></span></div></div>
+</div>
+</body></html>

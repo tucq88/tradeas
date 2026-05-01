@@ -1,0 +1,35 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 20px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .card { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: var(--r-md); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .lab { font: 500 var(--t-2xs)/1 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.005em; }
+  .big { font-size: 28px; font-weight: 600; line-height: 1; }
+  .delta { display: flex; align-items: center; gap: 8px; font-size: var(--t-md); }
+  .delta .pct { font-family: var(--font-mono); }
+  .delta .since { color: var(--fg-3); font-size: var(--t-xs); }
+  .arrow { font-family: var(--font-mono); }
+</style></head>
+<body>
+<div class="grid">
+  <div class="card">
+    <span class="lab">portfolio · 24h</span>
+    <span class="num big">$128,402<span style="color:var(--fg-3)">.17</span></span>
+    <span class="delta" style="color:var(--profit)"><span class="arrow">↑</span><span class="num pct">+1,284.20</span><span class="num pct">+1.01%</span><span class="since">24h</span></span>
+  </div>
+  <div class="card">
+    <span class="lab">unrealized pnl</span>
+    <span class="num big" style="color:var(--profit)">+$842.<span style="opacity:.7">10</span></span>
+    <span class="delta" style="color:var(--profit)"><span class="arrow">↑</span><span class="num pct">+4.21%</span><span class="since">on entry</span></span>
+  </div>
+  <div class="card">
+    <span class="lab">realized · 7d</span>
+    <span class="num big" style="color:var(--loss)">−$214.<span style="opacity:.7">88</span></span>
+    <span class="delta" style="color:var(--loss)"><span class="arrow">↓</span><span class="num pct">−0.17%</span><span class="since">7d</span></span>
+  </div>
+</div>
+</body></html>

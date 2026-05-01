@@ -1,0 +1,174 @@
+/* ============================================================
+   tu.tradeas — Design Tokens
+   Dark-first trading dashboard. Numbers-heavy, low-distraction.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap");
+
+:root {
+  /* ---------- Color: surfaces (dark, near-black, slightly cool) ---------- */
+  --bg-0:        #0a0d10;   /* page background, deepest */
+  --bg-1:        #0f1318;   /* panel background */
+  --bg-2:        #151a21;   /* raised card / row */
+  --bg-3:        #1c222b;   /* hover / active row */
+  --bg-inset:    #070a0d;   /* sunken (e.g. input fields) */
+
+  /* ---------- Color: borders & dividers ---------- */
+  --border-1:    #1f2730;   /* hairline, default */
+  --border-2:    #2a3340;   /* stronger, focus-adjacent */
+  --border-emph: #3a4554;   /* selected / focused */
+
+  /* ---------- Color: foreground (text) ---------- */
+  --fg-1:        #e6eaf0;   /* primary text */
+  --fg-2:        #a8b0bd;   /* secondary text / labels */
+  --fg-3:        #6b7480;   /* tertiary / hints */
+  --fg-4:        #444c57;   /* disabled / placeholder */
+
+  /* ---------- Color: semantic ---------- */
+  --profit:      #2ecc71;   /* gains, long pos in profit */
+  --profit-dim:  #1f8d4d;   /* used on filled bg */
+  --profit-bg:   #0f2417;   /* tinted surface */
+
+  --loss:        #ff5b5b;   /* losses, short pos in loss */
+  --loss-dim:    #c33838;
+  --loss-bg:     #2a1212;
+
+  --warn:        #f5a524;   /* near-liquidation, warnings */
+  --warn-dim:    #b97809;
+  --warn-bg:     #2a1f0a;
+
+  --neutral:     #8b95a3;   /* flat / no change */
+  --neutral-bg:  #1a2028;
+
+  /* ---------- Color: accent (primary brand) ---------- */
+  /* Cool cyan-blue — pulled away from profit green so the two can never
+     be confused at a glance. Reserved for focus, selection, links. */
+  --accent:      #5b9dff;
+  --accent-hi:   #82b6ff;
+  --accent-dim:  #2f6dc4;
+  --accent-bg:   #11203a;
+
+  /* ---------- Allocation palette (8 muted hues, donut slices) ---------- */
+  --alloc-1: #5b9dff;   /* accent blue */
+  --alloc-2: #2ecc71;   /* profit green */
+  --alloc-3: #f5a524;   /* warm amber */
+  --alloc-4: #c678dd;   /* muted purple */
+  --alloc-5: #56b6c2;   /* teal */
+  --alloc-6: #e06c75;   /* muted red */
+  --alloc-7: #d19a66;   /* warm tan */
+  --alloc-8: #98c379;   /* sage green */
+
+  /* ---------- Long / Short directional ---------- */
+  --long:        var(--profit);
+  --long-bg:     var(--profit-bg);
+  --short:       var(--loss);
+  --short-bg:    var(--loss-bg);
+
+  /* ---------- Type: families ---------- */
+  --font-sans:   "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:   "JetBrains Mono", ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+
+  /* ---------- Type scale (compact, dashboard-tuned) ---------- */
+  --t-2xs: 10px;   /* micro caps labels */
+  --t-xs:  11px;   /* table sublabels */
+  --t-sm:  12px;   /* labels, secondary numbers */
+  --t-md:  13px;   /* body / default UI */
+  --t-lg:  15px;   /* emphasized body */
+  --t-xl:  18px;   /* card subtitles */
+  --t-2xl: 24px;   /* metric numbers */
+  --t-3xl: 32px;   /* hero metric */
+  --t-4xl: 44px;   /* big-number panels */
+
+  --lh-tight:   1.1;
+  --lh-snug:    1.25;
+  --lh-normal:  1.45;
+
+  --tracking-tight:  -0.01em;
+  --tracking-normal: 0;
+  --tracking-caps:   0.08em;   /* uppercased labels */
+  --tracking-mono:   -0.005em; /* mono numbers */
+
+  /* ---------- Spacing (4px base) ---------- */
+  --s-0:  0;
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  20px;
+  --s-6:  24px;
+  --s-8:  32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+
+  /* ---------- Radius ---------- */
+  --r-xs: 3px;   /* badges, chips */
+  --r-sm: 5px;   /* inputs, small buttons */
+  --r-md: 8px;   /* cards inner */
+  --r-lg: 12px;  /* panels */
+  --r-xl: 16px;  /* dashboard outer */
+
+  /* ---------- Shadow / Elevation ---------- */
+  /* Dark UI: prefer subtle inner shadows + faint borders, not big drop shadows */
+  --shadow-1: 0 1px 0 rgba(255,255,255,0.02) inset, 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-2: 0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 16px rgba(0,0,0,0.45);
+  --shadow-focus: 0 0 0 2px rgba(91,157,255,0.40);
+  --shadow-inset: inset 0 1px 0 rgba(0,0,0,0.4);
+
+  /* ---------- Motion ---------- */
+  --ease-out:   cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --dur-fast:   120ms;
+  --dur-med:    200ms;
+
+  /* ---------- Layout grid ---------- */
+  --grid-gap:    16px;
+  --panel-pad:   20px;
+  --row-h:       36px;   /* compact data row */
+  --row-h-lg:    44px;   /* prominent row */
+}
+
+/* ============================================================
+   Element defaults — semantic shortcuts
+   ============================================================ */
+
+html, body {
+  background: var(--bg-0);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--t-md);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1 { font: 600 var(--t-3xl)/var(--lh-tight) var(--font-sans); letter-spacing: var(--tracking-tight); }
+h2 { font: 600 var(--t-2xl)/var(--lh-tight) var(--font-sans); letter-spacing: var(--tracking-tight); }
+h3 { font: 600 var(--t-xl)/var(--lh-snug)  var(--font-sans); }
+h4 { font: 600 var(--t-lg)/var(--lh-snug)  var(--font-sans); }
+
+p, li { font-size: var(--t-md); color: var(--fg-1); }
+
+code, kbd, samp, .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" on, "ss01" on;
+  letter-spacing: var(--tracking-mono);
+}
+
+/* Convenience utility classes used across UI kit + cards */
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: var(--tracking-mono); }
+.label-caps {
+  font: 500 var(--t-2xs)/1 var(--font-sans);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.fg-1 { color: var(--fg-1); }
+.fg-2 { color: var(--fg-2); }
+.fg-3 { color: var(--fg-3); }
+.profit { color: var(--profit); }
+.loss   { color: var(--loss);   }
+.warn   { color: var(--warn);   }
+.neutral{ color: var(--neutral);}
+.accent { color: var(--accent); }

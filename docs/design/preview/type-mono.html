@@ -1,0 +1,22 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 24px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .row { display: grid; grid-template-columns: 110px 1fr; gap: 18px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px solid var(--border-1); }
+  .row:last-child { border-bottom: 0; }
+  .meta { font: 500 var(--t-2xs)/1.4 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .meta .px { display: block; font-family: var(--font-mono); letter-spacing: 0; text-transform: none; color: var(--fg-2); margin-top: 4px; }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.005em; color: var(--fg-1); }
+</style></head>
+<body>
+<div class="stack">
+  <div class="row"><div class="meta">hero metric<span class="px">600 · 44</span></div><div class="num" style="font-size:44px;font-weight:600;">$128,402.<span style="color:var(--fg-3);">17</span></div></div>
+  <div class="row"><div class="meta">big metric<span class="px">600 · 32</span></div><div class="num" style="font-size:32px;font-weight:600;color:var(--profit);">+$1,284.20</div></div>
+  <div class="row"><div class="meta">price<span class="px">500 · 24</span></div><div class="num" style="font-size:24px;font-weight:500;">65,418.<span style="color:var(--fg-3);">5</span></div></div>
+  <div class="row"><div class="meta">row data<span class="px">400 · 13</span></div><div class="num" style="font-size:13px;">0.142 BTC · lev 5× · liq 58,210.0</div></div>
+  <div class="row"><div class="meta">tabular<span class="px">tabular-nums on</span></div><div class="num" style="font-size:13px;color:var(--fg-2);">000.00<br>114.20<br>+04.18</div></div>
+</div>
+</body></html>

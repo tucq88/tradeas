@@ -1,0 +1,41 @@
+<!-- shared head used by every preview card -->
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--bg-0); color: var(--fg-1); }
+  body {
+    padding: 20px;
+    box-sizing: border-box;
+    width: 700px;
+    min-height: 100%;
+    font-family: var(--font-sans);
+    font-size: var(--t-md);
+  }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .col { display: flex; flex-direction: column; gap: 12px; }
+  .grid { display: grid; gap: 10px; }
+  .label-caps {
+    font: 500 var(--t-2xs)/1 var(--font-sans);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .swatch {
+    width: 100%;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border-1);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .swatch .fill { height: 56px; }
+  .swatch .meta { padding: 8px 10px; display: flex; justify-content: space-between; gap: 8px; background: var(--bg-1); }
+  .swatch .meta .name { color: var(--fg-1); font-size: var(--t-xs); font-weight: 500; }
+  .swatch .meta .hex { color: var(--fg-3); font-family: var(--font-mono); font-size: var(--t-xs); }
+  .panel {
+    background: var(--bg-1);
+    border: 1px solid var(--border-1);
+    border-radius: var(--r-md);
+    padding: var(--panel-pad);
+  }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+</style>

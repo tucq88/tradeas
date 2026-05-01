@@ -1,0 +1,34 @@
+<!doctype html><html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  body { padding: 22px; width: 700px; box-sizing: border-box; font-family: var(--font-sans); color: var(--fg-1); }
+  .panel { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: var(--r-md); padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .lab { font: 500 var(--t-2xs)/1 var(--font-sans); color: var(--fg-3); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .bar { display: flex; height: 14px; border-radius: 3px; overflow: hidden; background: var(--bg-2); }
+  .bar > span { display: block; transition: opacity 120ms; }
+  .legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .legend > div { display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; border-radius: var(--r-sm); background: var(--bg-2); border: 1px solid var(--border-1); }
+  .legend .top { display: flex; align-items: center; gap: 6px; font: 500 12px/1 var(--font-sans); }
+  .legend .dot { width: 8px; height: 8px; border-radius: 2px; }
+  .legend .pct { font: 600 16px/1 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--fg-1); }
+  .legend .val { font: 400 11px/1 var(--font-mono); color: var(--fg-3); }
+</style></head>
+<body>
+<div class="panel">
+  <span class="lab">allocation · stacked</span>
+  <div class="bar">
+    <span style="background:#5b9dff; width:41.1%;"></span>
+    <span style="background:#a8b0bd; width:27.8%;"></span>
+    <span style="background:#2ecc71; width:19.0%;"></span>
+    <span style="background:#f5a524; width:12.1%;"></span>
+  </div>
+  <div class="legend">
+    <div><div class="top"><span class="dot" style="background:#5b9dff;"></span>ETH</div><div class="pct">41.1%</div><div class="val">$39.8k</div></div>
+    <div><div class="top"><span class="dot" style="background:#a8b0bd;"></span>BTC</div><div class="pct">27.8%</div><div class="val">$27.0k</div></div>
+    <div><div class="top"><span class="dot" style="background:#2ecc71;"></span>USDC</div><div class="pct">19.0%</div><div class="val">$18.4k</div></div>
+    <div><div class="top"><span class="dot" style="background:#f5a524;"></span>SOL</div><div class="pct">12.1%</div><div class="val">$11.6k</div></div>
+  </div>
+</div>
+</body></html>
