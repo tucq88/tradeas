@@ -3,18 +3,23 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { perpPositions } from '@/data/perpPositions';
 import { useMarkPrices } from '@/data/hooks/useMarkPrice';
 import { useSettings } from '@/state/settings';
-import type { PerpPosition } from '@/data/types';
-import { realizedPnl } from './compute';
 import { PositionRow } from './PositionRow';
 import { PositionForm } from './PositionForm';
+import { PerpRealizedSummary } from './PerpRealizedSummary';
 import { Card } from '@/ui/Card';
 import { Button } from '@/ui/Button';
-import { fmtUSD, fmtPrice } from '@/lib/format';
+import { Tabs } from '@/ui/Tabs';
+
+const TABS = [
+  { id: 'open', label: 'Open' },
+  { id: 'realized', label: 'Realized' },
+];
 
 export function PerpPanel() {
   const qc = useQueryClient();
   const [settings] = useSettings();
   const [showForm, setShowForm] = useState(false);
+  const [tab, setTab] = useState<'open' | 'realized'>('open');
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['perp-positions'],
@@ -45,85 +50,56 @@ export function PerpPanel() {
 
       {!isLoading && !isError && (
         <>
-          {open.length === 0 && !showForm && (
-            <p className="text-fg-3 text-[13px]">no open positions</p>
-          )}
+          <Tabs tabs={TABS} active={tab} onChange={(id) => setTab(id as 'open' | 'realized')} />
 
-          {open.length > 0 && (
-            <div className="overflow-x-auto -mx-[18px]">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-border-1">
-                    {['Symbol', 'Side', 'Entry', 'Mark', 'Size', 'PnL', 'Liq', 'Dist%'].map((h) => (
-                      <th key={h} className="py-1 px-2 label-caps font-medium">{h}</th>
-                    ))}
-                    <th className="py-1 px-2" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {open.map((row) => (
-                    <PositionRow
-                      key={row.id}
-                      row={row}
-                      markPrice={markPrices?.[row.symbol]}
-                      settings={settings}
-                    />
-                  ))}
-                </tbody>
-              </table>
+          {tab === 'open' && (
+            <div className="flex flex-col gap-2 mt-2">
+              {open.length === 0 && !showForm && (
+                <p className="text-fg-3 text-[13px]">no open positions</p>
+              )}
+
+              {open.length > 0 && (
+                <div className="overflow-x-auto -mx-[18px]">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-border-1">
+                        {['Symbol', 'Side', 'Entry', 'Mark', 'Size', 'PnL', 'Liq', 'Dist%'].map((h) => (
+                          <th key={h} className="py-1 px-2 label-caps font-medium">{h}</th>
+                        ))}
+                        <th className="py-1 px-2" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {open.map((row) => (
+                        <PositionRow
+                          key={row.id}
+                          row={row}
+                          markPrice={markPrices?.[row.symbol]}
+                          settings={settings}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {showForm ? (
+                <PositionForm onDone={() => setShowForm(false)} />
+              ) : (
+                <Button className="self-start" onClick={() => setShowForm(true)}>
+                  + Add Position
+                </Button>
+              )}
             </div>
           )}
 
-          {showForm ? (
-            <PositionForm onDone={() => setShowForm(false)} />
-          ) : (
-            <Button className="self-start" onClick={() => setShowForm(true)}>
-              + Add Position
-            </Button>
-          )}
-
-          {closed.length > 0 && (
-            <ClosedSection positions={closed} />
+          {tab === 'realized' && (
+            <div className="mt-2">
+              <PerpRealizedSummary positions={closed} />
+            </div>
           )}
         </>
       )}
     </Card>
-  );
-}
-
-function ClosedSection({ positions }: { positions: PerpPosition[] }) {
-  return (
-    <div className="flex flex-col gap-1 border-t border-border-1 pt-3 mt-1">
-      <span className="label-caps">Closed</span>
-      <div className="overflow-x-auto -mx-[18px]">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-border-1">
-              {['Symbol', 'Side', 'Entry', 'Exit', 'Realized PnL'].map((h) => (
-                <th key={h} className="py-1 px-2 label-caps font-medium">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {positions.map((row) => {
-              const pnl = realizedPnl(row);
-              return (
-                <tr key={row.id} className="border-b border-border-1">
-                  <td className="py-2 px-2 font-mono text-[12px] text-fg-1">{row.symbol}</td>
-                  <td className="py-2 px-2 font-mono text-[12px] text-fg-2">{row.direction}</td>
-                  <td className="py-2 px-2 font-mono text-[12px] text-fg-2 tabular-nums">{fmtPrice(row.entry_price)}</td>
-                  <td className="py-2 px-2 font-mono text-[12px] text-fg-2 tabular-nums">
-                    {row.exit_price != null ? fmtPrice(row.exit_price) : '—'}
-                  </td>
-                  <td className={`py-2 px-2 font-mono text-[12px] tabular-nums ${pnl != null && pnl >= 0 ? 'text-profit' : 'text-loss'}`}>
-                    {pnl != null ? fmtUSD(pnl) : '—'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
   );
 }
