@@ -49,4 +49,13 @@ export const spotLots = {
     const { error } = await supabase.from('spot_lots').delete().eq('id', id);
     if (error) throw error;
   },
+
+  async bulkCreate(inputs: SpotLotInput[]): Promise<SpotLot[]> {
+    const { data, error } = await supabase
+      .from('spot_lots')
+      .insert(inputs)
+      .select();
+    if (error) throw error;
+    return (data ?? []) as SpotLot[];
+  },
 };

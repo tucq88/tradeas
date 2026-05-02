@@ -21,6 +21,15 @@ function makeChain(data: unknown, error: unknown = null) {
   return chain;
 }
 
+// Chain for bulkCreate: insert().select() resolves directly
+function makeBulkChain(data: unknown, error: unknown = null) {
+  const resolved = { data, error };
+  return {
+    insert: vi.fn().mockReturnThis(),
+    select: vi.fn().mockResolvedValue(resolved),
+  };
+}
+
 const mockFrom = vi.mocked(supabase.from);
 
 beforeEach(() => {
@@ -79,5 +88,31 @@ describe('spotLots.markDone', () => {
       'exitPrice and exitDate required'
     );
     expect(mockFrom).not.toHaveBeenCalled();
+  });
+});
+
+describe('spotLots.bulkCreate', () => {
+  it('inserts array and returns created rows', async () => {
+    const inputs = [
+      { asset: 'BTC', amount: 0.1, entry_price: 50000, cost_usd: 5000,
+        date: '2024-01-01', status: 'wip' as const, exit_price: null, exit_date: null },
+    ];
+    const created: SpotLot[] = [
+      { id: '10', created_at: '2024-01-01T00:00:00Z', ...inputs[0] },
+    ];
+    mockFrom.mockReturnValue(makeBulkChain(created) as never);
+    const result = await spotLots.bulkCreate(inputs);
+    expect(mockFrom).toHaveBeenCalledWith('spot_lots');
+    expect(result).toEqual(created);
+  });
+
+  it('throws when supabase returns an error', async () => {
+    const inputs = [
+      { asset: 'BTC', amount: 0.1, entry_price: 50000, cost_usd: 5000,
+        date: '2024-01-01', status: 'wip' as const, exit_price: null, exit_date: null },
+    ];
+    const dbError = { message: 'DB constraint violation', code: '23505' };
+    mockFrom.mockReturnValue(makeBulkChain(null, dbError) as never);
+    await expect(spotLots.bulkCreate(inputs)).rejects.toMatchObject({ message: 'DB constraint violation' });
   });
 });
