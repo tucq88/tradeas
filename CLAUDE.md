@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`tu.tradeas` is a personal crypto trading management dashboard — a single "overlord screen" replacing a manual Google Sheets workflow. Built for one user (solo).
+**Tradeas** (Personal Trade Assistant) is a personal crypto trading management dashboard — a single "overlord screen" replacing a manual Google Sheets workflow. Built for one user (solo).
 
 ## Commands
 

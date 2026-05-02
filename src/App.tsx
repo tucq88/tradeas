@@ -14,10 +14,10 @@ export default function App() {
     <div className="min-h-screen bg-bg-0 text-fg-1 p-6 overflow-x-hidden">
       <header className="flex items-center justify-between h-11 mb-4">
         <span
-          aria-label="tu.tradeas"
+          aria-label="tradeas"
           className="font-sans font-semibold text-base leading-none tracking-tight text-fg-1"
         >
-          tu<span className="text-accent">.</span>tradeas
+          trade<span className="text-accent">a</span>s
         </span>
         <div className="flex items-center gap-2">
           <RefreshAllButton />

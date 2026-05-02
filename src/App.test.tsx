@@ -11,7 +11,7 @@ function renderWithClient(ui: React.ReactElement) {
 describe("App", () => {
   it("renders the wordmark", () => {
     renderWithClient(<App />);
-    expect(screen.getByLabelText("tu.tradeas")).toBeInTheDocument();
+    expect(screen.getByLabelText("tradeas")).toBeInTheDocument();
   });
 
   it("renders all four panel headings", () => {

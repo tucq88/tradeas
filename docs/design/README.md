@@ -1,6 +1,6 @@
-# tu.tradeas Design System
+# Tradeas Design System
 
-A design system for **tu.tradeas** — a personal, single-page crypto trading "overlord" dashboard. This is a solo tool, not a product: precision and readability take priority over decoration.
+A design system for **Tradeas** — a personal, single-page crypto trading "overlord" dashboard. This is a solo tool, not a product: precision and readability take priority over decoration.
 
 ## Product context
 
@@ -12,7 +12,7 @@ A design system for **tu.tradeas** — a personal, single-page crypto trading "o
 
 ## Sources
 
-No external codebase, Figma file, or brand kit was provided. The system below was authored from the brief. The lowercase wordmark `tu.tradeas` is treated as the brand. All values are placeholders ready for the user to refine.
+No external codebase, Figma file, or brand kit was provided. The system below was authored from the brief. The lowercase wordmark `tradeas` is treated as the brand. All values are placeholders ready for the user to refine.
 
 ## Index
 
@@ -100,5 +100,5 @@ The Lucide CDN is referenced from the UI kit via `https://unpkg.com/lucide-stati
 ## Substitutions to confirm
 
 - **Fonts** — `Geist` and `JetBrains Mono` loaded from Google Fonts. These are nearest-match open-license substitutions; swap to your own files when you have them. Flagged for review.
-- **Logo** — provisional lowercase wordmark `tu.tradeas` rendered in Inter Tight. Replace `assets/logo.svg` when you have a real mark.
+- **Logo** — provisional lowercase wordmark `tradeas` rendered in Inter Tight. Replace `assets/logo.svg` when you have a real mark.
 - **Icon set** — Lucide via CDN. Drop in your own SVGs if you'd like.

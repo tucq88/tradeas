@@ -1,6 +1,6 @@
 ---
-name: tu-tradeas-design
-description: Use this skill to generate well-branded interfaces and assets for tu.tradeas, a personal crypto trading dashboard, either for production or throwaway prototypes/mocks/etc. Contains essential design guidelines, colors, type, fonts, assets, and UI kit components for prototyping.
+name: tradeas-design
+description: Use this skill to generate well-branded interfaces and assets for Tradeas, a personal crypto trading dashboard, either for production or throwaway prototypes/mocks/etc. Contains essential design guidelines, colors, type, fonts, assets, and UI kit components for prototyping.
 user-invocable: true
 ---
 

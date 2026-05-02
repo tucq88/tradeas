@@ -1,4 +1,4 @@
-# tu.tradeas — Overlord Dashboard
+# Tradeas — Overlord Dashboard
 
 A pixel-fidelity recreation of the four-panel single-page dashboard.
 
