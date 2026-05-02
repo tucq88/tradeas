@@ -7,7 +7,7 @@ export type Settings = {
   refreshSec: number;
 };
 
-export const STORAGE_KEY = 'tu.tradeas:settings:v1';
+export const STORAGE_KEY = 'tradeas:settings:v2';
 
 export const DEFAULTS: Settings = {
   accountBalanceUsd: 1000,

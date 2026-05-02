@@ -6,8 +6,8 @@ beforeEach(() => {
 });
 
 describe('STORAGE_KEY', () => {
-  it('is exactly tu.tradeas:settings:v1', () => {
-    expect(STORAGE_KEY).toBe('tu.tradeas:settings:v1');
+  it('is exactly tradeas:settings:v2', () => {
+    expect(STORAGE_KEY).toBe('tradeas:settings:v2');
   });
 });
 
