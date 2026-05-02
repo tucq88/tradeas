@@ -12,6 +12,7 @@ export function Input({ suffix, className, ...rest }: InputProps) {
         {...rest}
         className={cn(
           "bg-transparent border-0 outline-0 text-fg-1 flex-1 min-w-0 font-mono text-sm font-medium leading-none tabular-nums",
+          "[&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50 [&::-webkit-calendar-picker-indicator]:cursor-pointer",
           className,
         )}
       />
