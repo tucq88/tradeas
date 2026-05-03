@@ -2,7 +2,9 @@ import { useSyncExternalStore } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
 function getSnapshot(client: ReturnType<typeof useQueryClient>): number | null {
-  const queries = client.getQueryCache().findAll({ queryKey: ['binance'] });
+  const queries = client
+    .getQueryCache()
+    .findAll({ predicate: (q) => q.queryKey[0] === 'binance' || q.queryKey[0] === 'coingecko' });
   if (queries.length === 0) return null;
   let max = 0;
   for (const q of queries) {

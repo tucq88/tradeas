@@ -2,11 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { aggregateWip, aggregateDone } from '../aggregate';
 import type { SpotLot } from '@/data/types';
 
+const P = (price: number) => ({ price, image: '' });
+
 function makeLot(overrides: Partial<SpotLot> = {}): SpotLot {
   return {
     id: '1',
     created_at: '2024-01-01T00:00:00Z',
     asset: 'BTC',
+    coingecko_id: 'bitcoin',
     amount: 1,
     entry_price: 50000,
     cost_usd: 50000,
@@ -24,7 +27,7 @@ describe('aggregateWip', () => {
       makeLot({ id: '1', amount: 1, entry_price: 50000, cost_usd: 50000 }),
       makeLot({ id: '2', amount: 1, entry_price: 60000, cost_usd: 60000 }),
     ];
-    const [agg] = aggregateWip(lots, { BTCUSDT: 55000 });
+    const [agg] = aggregateWip(lots, { bitcoin: P(55000) });
     expect(agg.weightedAvgCost).toBe(55000);
     expect(agg.totalInvested).toBe(110000);
     expect(agg.currentValue).toBeCloseTo(110000);
@@ -33,10 +36,10 @@ describe('aggregateWip', () => {
 
   it('segregates multiple assets correctly', () => {
     const lots = [
-      makeLot({ id: '1', asset: 'BTC', amount: 1, cost_usd: 50000 }),
-      makeLot({ id: '2', asset: 'ETH', amount: 10, cost_usd: 20000 }),
+      makeLot({ id: '1', asset: 'BTC', coingecko_id: 'bitcoin', amount: 1, cost_usd: 50000 }),
+      makeLot({ id: '2', asset: 'ETH', coingecko_id: 'ethereum', amount: 10, cost_usd: 20000 }),
     ];
-    const aggs = aggregateWip(lots, { BTCUSDT: 50000, ETHUSDT: 2000 });
+    const aggs = aggregateWip(lots, { bitcoin: P(50000), ethereum: P(2000) });
     expect(aggs).toHaveLength(2);
     const btc = aggs.find((a) => a.asset === 'BTC')!;
     const eth = aggs.find((a) => a.asset === 'ETH')!;
@@ -46,20 +49,28 @@ describe('aggregateWip', () => {
 
   it('excludes done lots (caller filters, but ensures segregation)', () => {
     const wipLot = makeLot({ id: '1', status: 'wip' });
-    const aggs = aggregateWip([wipLot], { BTCUSDT: 50000 });
+    const aggs = aggregateWip([wipLot], { bitcoin: P(50000) });
     expect(aggs).toHaveLength(1);
     expect(aggs[0].lots).toHaveLength(1);
   });
 
   it('handles zero amount without divide-by-zero', () => {
     const lots = [makeLot({ amount: 0, cost_usd: 0 })];
-    const [agg] = aggregateWip(lots, { BTCUSDT: 50000 });
+    const [agg] = aggregateWip(lots, { bitcoin: P(50000) });
     expect(agg.weightedAvgCost).toBe(0);
     expect(agg.currentValue).toBe(0);
     expect(agg.unrealizedPnl).toBe(0);
   });
 
-  it('returns null unrealized fields when price is missing from priceMap', () => {
+  it('returns null unrealized fields when coingecko_id is null', () => {
+    const lots = [makeLot({ coingecko_id: null })];
+    const [agg] = aggregateWip(lots, {});
+    expect(agg.currentValue).toBeNull();
+    expect(agg.unrealizedPnl).toBeNull();
+    expect(agg.pctDelta).toBeNull();
+  });
+
+  it('returns null unrealized fields when id not in priceMap', () => {
     const lots = [makeLot()];
     const [agg] = aggregateWip(lots, {});
     expect(agg.currentValue).toBeNull();
@@ -67,11 +78,25 @@ describe('aggregateWip', () => {
     expect(agg.pctDelta).toBeNull();
   });
 
+  it('treats explicit null in priceMap same as missing key', () => {
+    const lots = [makeLot()];
+    const [agg] = aggregateWip(lots, { bitcoin: null });
+    expect(agg.currentValue).toBeNull();
+    expect(agg.unrealizedPnl).toBeNull();
+    expect(agg.pctDelta).toBeNull();
+  });
+
   it('computes pctDelta as fraction (not percent) of invested', () => {
     const lots = [makeLot({ amount: 1, cost_usd: 50000 })];
-    const [agg] = aggregateWip(lots, { BTCUSDT: 55000 });
+    const [agg] = aggregateWip(lots, { bitcoin: P(55000) });
     // unrealizedPnl = 55000 - 50000 = 5000; pctDelta = 5000/50000 = 0.10
     expect(agg.pctDelta).toBeCloseTo(0.1);
+  });
+
+  it('includes image from priceMap in agg', () => {
+    const lots = [makeLot()];
+    const [agg] = aggregateWip(lots, { bitcoin: { price: 50000, image: 'https://img.cg/btc.png' } });
+    expect(agg.image).toBe('https://img.cg/btc.png');
   });
 });
 

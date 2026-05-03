@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { spotLots } from '@/data/spotLots';
 import type { SpotLot, SpotLotInput } from '@/data/types';
+import type { CoinListEntry } from '@/data/coingecko/coinList';
+import { useCoinList } from '@/data/hooks/useCoinList';
 import { Input } from '@/ui/Input';
 import { Button } from '@/ui/Button';
+import { AssetPicker } from '@/ui/AssetPicker';
 import { numStr } from '@/lib/format';
-import { getSpotPrice } from '@/data/binance/spot';
-import { BinanceError } from '@/data/binance/errors';
-import { toBinancePair } from '@/lib/symbols';
 
 type FormState = {
   date: string;
   asset: string;
+  coingecko_id: string | null;
   entry_price: string;
   amount: string;
   cost_usd: string;
@@ -19,30 +20,24 @@ type FormState = {
 };
 
 const EMPTY: FormState = {
-  date: '', asset: '', entry_price: '', amount: '', cost_usd: '', lastEdited: null,
+  date: '',
+  asset: '',
+  coingecko_id: null,
+  entry_price: '',
+  amount: '',
+  cost_usd: '',
+  lastEdited: null,
 };
 
-export function LotForm() {
+type Props = { heldIds: string[] };
+
+export function LotForm({ heldIds }: Props) {
   const qc = useQueryClient();
+  const { data: coinList } = useCoinList();
   const [form, setForm] = useState<FormState>(EMPTY);
-  const [symbolError, setSymbolError] = useState<string | null>(null);
 
-  const handleAssetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, asset: e.target.value }));
-    setSymbolError(null);
-  };
-
-  const handleAssetBlur = () => {
-    const asset = form.asset.trim().toUpperCase();
-    if (!asset) return;
-    let pair: string;
-    try { pair = toBinancePair(asset); } catch { return; }
-    void getSpotPrice(pair)
-      .then(() => setSymbolError(null))
-      .catch((err: unknown) => {
-        if (err instanceof BinanceError && err.kind === 'unknown-symbol')
-          setSymbolError('unknown symbol');
-      });
+  const handleAssetSelect = (entry: CoinListEntry) => {
+    setForm((f) => ({ ...f, asset: entry.symbol.toUpperCase(), coingecko_id: entry.id }));
   };
 
   const handleEntryPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +85,6 @@ export function LotForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (symbolError) return;
     const amount = parseFloat(form.amount);
     const entry_price = parseFloat(form.entry_price);
     const cost_usd = parseFloat(form.cost_usd);
@@ -99,6 +93,7 @@ export function LotForm() {
     mutation.mutate({
       date: form.date,
       asset: form.asset.trim().toUpperCase(),
+      coingecko_id: form.coingecko_id,
       amount,
       entry_price,
       cost_usd,
@@ -116,11 +111,11 @@ export function LotForm() {
           value={form.date}
           onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
         />
-        <Input
+        <AssetPicker
+          coinList={coinList}
+          heldIds={heldIds}
+          onSelect={handleAssetSelect}
           placeholder="BTC"
-          value={form.asset}
-          onChange={handleAssetChange}
-          onBlur={handleAssetBlur}
         />
         <Input
           type="number"
@@ -147,11 +142,10 @@ export function LotForm() {
           min="0"
         />
       </div>
-      {symbolError && <p className="text-loss text-[11px]">{symbolError}</p>}
       {mutation.isError && (
         <p className="text-loss text-[11px]">error saving lot — try again</p>
       )}
-      <Button type="submit" variant="primary" disabled={mutation.isPending || !!symbolError}>
+      <Button type="submit" variant="primary" disabled={mutation.isPending || !form.coingecko_id}>
         {mutation.isPending ? 'adding…' : 'add lot'}
       </Button>
     </form>

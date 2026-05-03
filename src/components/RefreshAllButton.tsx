@@ -18,7 +18,9 @@ export function RefreshAllButton() {
 
   function handleClick() {
     if (lockRef.current) return;
-    void qc.invalidateQueries({ predicate: (q) => q.queryKey[0] === 'binance' });
+    void qc.invalidateQueries({
+      predicate: (q) => q.queryKey[0] === 'binance' || q.queryKey[0] === 'coingecko',
+    });
     setLastFiredAt(Date.now());
     setElapsed(0);
     lockRef.current = setTimeout(() => {

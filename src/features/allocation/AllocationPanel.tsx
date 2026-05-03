@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { spotLots } from '@/data/spotLots';
 import type { SpotLot } from '@/data/types';
-import { useSpotPrices } from '@/data/hooks/useSpotPrice';
+import { useCoingeckoPrices } from '@/data/hooks/useCoingeckoPrices';
 import { aggregateWip, type AssetAgg } from '@/features/spot/aggregate';
-import { toBinancePair } from '@/lib/symbols';
 import { fmtUSD, fmtNum } from '@/lib/format';
 import { Card } from '@/ui/Card';
 import { Button } from '@/ui/Button';
@@ -22,6 +21,7 @@ export function computeSlices(aggs: AssetAgg[]): Slice[] {
   if (totalValue === 0) return [];
   return sorted.map((agg, i) => ({
     asset: agg.asset,
+    image: agg.image,
     currentValue: agg.currentValue,
     pctOfBook: agg.currentValue / totalValue,
     unrealizedPnl: agg.unrealizedPnl,
@@ -44,17 +44,20 @@ export function AllocationPanel() {
   });
 
   const wip = lots.filter((l) => l.status === 'wip');
-  const uniquePairs = [...new Set(wip.map((l) => toBinancePair(l.asset)))];
-  const { data: priceMap = {} } = useSpotPrices(uniquePairs);
+  const uniqueIds = [...new Set(
+    wip.map((l) => l.coingecko_id).filter((id): id is string => id !== null),
+  )];
+  const { data: priceMap = {} } = useCoingeckoPrices(uniqueIds);
 
   const aggs = aggregateWip(wip, priceMap);
+  const unavailableAssets = aggs.filter((a) => a.currentValue === null).map((a) => a.asset);
   const slices = computeSlices(aggs);
   const totalValue = slices.reduce((s, sl) => s + sl.currentValue, 0);
   const isEmpty = slices.length === 0;
 
   const handleRefresh = () => {
     void qc.invalidateQueries({ queryKey: ['spot-lots'] });
-    void qc.invalidateQueries({ queryKey: ['binance', 'spot'] });
+    void qc.invalidateQueries({ queryKey: ['coingecko', 'prices'] });
   };
 
   const cardAction = isEmpty ? (
@@ -91,7 +94,7 @@ export function AllocationPanel() {
                   className="inline-block w-3 h-3 rounded-[2px] shrink-0"
                   style={{ backgroundColor: slice.color }}
                 />
-                <TokenLogo symbol={slice.asset} />
+                <TokenLogo symbol={slice.asset} src={slice.image} />
                 <span className="font-mono font-medium text-fg-1 w-10 shrink-0">
                   {slice.asset}
                 </span>
@@ -103,6 +106,11 @@ export function AllocationPanel() {
                 </span>
               </div>
             ))}
+            {unavailableAssets.length > 0 && (
+              <p className="text-fg-3 text-[11px] mt-1">
+                {unavailableAssets.join(', ')} · price unavailable
+              </p>
+            )}
           </div>
         </>
       )}

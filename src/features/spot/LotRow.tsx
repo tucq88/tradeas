@@ -2,29 +2,30 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { spotLots } from '@/data/spotLots';
 import type { SpotLot, SpotLotPatch } from '@/data/types';
+import type { CoinListEntry } from '@/data/coingecko/coinList';
+import { useCoinList } from '@/data/hooks/useCoinList';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
+import { AssetPicker } from '@/ui/AssetPicker';
 import { fmtUSD, fmtNum, fmtPrice } from '@/lib/format';
-import { getSpotPrice } from '@/data/binance/spot';
-import { BinanceError } from '@/data/binance/errors';
-import { toBinancePair } from '@/lib/symbols';
 
 type Mode = 'display' | 'edit' | 'done' | 'remove';
 
-type Props = { lot: SpotLot };
+type Props = { lot: SpotLot; heldIds: string[] };
 
-export function LotRow({ lot }: Props) {
+export function LotRow({ lot, heldIds }: Props) {
   const qc = useQueryClient();
+  const { data: coinList } = useCoinList();
   const [mode, setMode] = useState<Mode>('display');
   const [editForm, setEditForm] = useState({
     date: lot.date,
     asset: lot.asset,
+    coingecko_id: lot.coingecko_id,
     amount: String(lot.amount),
     entry_price: String(lot.entry_price),
     cost_usd: String(lot.cost_usd),
   });
   const [doneForm, setDoneForm] = useState({ exit_price: '', exit_date: '' });
-  const [symbolError, setSymbolError] = useState<string | null>(null);
 
   const applyPatch = (cache: SpotLot[] | undefined, updated: SpotLot): SpotLot[] =>
     (cache ?? []).map((l) => (l.id === updated.id ? updated : l));
@@ -60,41 +61,20 @@ export function LotRow({ lot }: Props) {
     setEditForm({
       date: lot.date,
       asset: lot.asset,
+      coingecko_id: lot.coingecko_id,
       amount: String(lot.amount),
       entry_price: String(lot.entry_price),
       cost_usd: String(lot.cost_usd),
     });
-    setSymbolError(null);
     setMode('edit');
   };
-
-  const enterDone = () => {
-    setDoneForm({ exit_price: '', exit_date: '' });
-    setMode('done');
-  };
-
-  const enterRemove = () => setMode('remove');
 
   const setE =
     (f: keyof typeof editForm) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setEditForm((s) => ({ ...s, [f]: e.target.value }));
 
-  const handleAssetEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditForm((s) => ({ ...s, asset: e.target.value }));
-    setSymbolError(null);
-  };
-
-  const handleAssetEditBlur = () => {
-    const asset = editForm.asset.trim().toUpperCase();
-    if (!asset) return;
-    let pair: string;
-    try { pair = toBinancePair(asset); } catch { return; }
-    void getSpotPrice(pair)
-      .then(() => setSymbolError(null))
-      .catch((err: unknown) => {
-        if (err instanceof BinanceError && err.kind === 'unknown-symbol')
-          setSymbolError('unknown symbol');
-      });
+  const handleAssetSelect = (entry: CoinListEntry) => {
+    setEditForm((s) => ({ ...s, asset: entry.symbol.toUpperCase(), coingecko_id: entry.id }));
   };
 
   const setD =
@@ -103,10 +83,10 @@ export function LotRow({ lot }: Props) {
 
   if (mode === 'edit') {
     const handleSave = () => {
-      if (symbolError) return;
       editMutation.mutate({
         date: editForm.date,
         asset: editForm.asset.trim().toUpperCase(),
+        coingecko_id: editForm.coingecko_id,
         amount: parseFloat(editForm.amount),
         entry_price: parseFloat(editForm.entry_price),
         cost_usd: parseFloat(editForm.cost_usd),
@@ -116,22 +96,18 @@ export function LotRow({ lot }: Props) {
       <div className="flex flex-col gap-2 py-2 border-t border-border-1">
         <div className="grid grid-cols-5 gap-2">
           <Input type="date" value={editForm.date} onChange={setE('date')} />
-          <Input
-            value={editForm.asset}
-            onChange={handleAssetEditChange}
-            onBlur={handleAssetEditBlur}
+          <AssetPicker
+            coinList={coinList}
+            heldIds={heldIds}
+            onSelect={handleAssetSelect}
+            placeholder={editForm.asset || 'asset'}
           />
           <Input type="number" value={editForm.amount} onChange={setE('amount')} step="any" min="0" />
           <Input type="number" value={editForm.entry_price} onChange={setE('entry_price')} step="any" min="0" />
           <Input type="number" value={editForm.cost_usd} onChange={setE('cost_usd')} step="any" min="0" />
         </div>
-        {symbolError && <p className="text-loss text-[11px]">{symbolError}</p>}
         <div className="flex gap-2">
-          <Button
-            variant="primary"
-            onClick={handleSave}
-            disabled={editMutation.isPending || !!symbolError}
-          >
+          <Button variant="primary" onClick={handleSave} disabled={editMutation.isPending}>
             {editMutation.isPending ? 'saving…' : 'save'}
           </Button>
           <Button onClick={() => setMode('display')}>cancel</Button>
@@ -199,8 +175,8 @@ export function LotRow({ lot }: Props) {
       </div>
       <div className="flex gap-1">
         <Button onClick={enterEdit}>edit</Button>
-        <Button onClick={enterDone}>mark done</Button>
-        <Button onClick={enterRemove}>remove</Button>
+        <Button onClick={() => setMode('done')}>mark done</Button>
+        <Button onClick={() => setMode('remove')}>remove</Button>
       </div>
     </div>
   );

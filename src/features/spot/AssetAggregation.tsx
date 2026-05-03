@@ -26,7 +26,7 @@ export function AssetAggregation({ agg, isCollapsed, onToggle }: Props) {
         <span className="text-fg-3 font-mono text-[10px] w-2 shrink-0">
           {isCollapsed ? '▸' : '▾'}
         </span>
-        <TokenLogo symbol={agg.asset} />
+        <TokenLogo symbol={agg.asset} src={agg.image} />
         <span className="font-sans font-semibold uppercase tracking-wider text-[11px]">
           {agg.asset}
         </span>
@@ -48,6 +48,9 @@ export function AssetAggregation({ agg, isCollapsed, onToggle }: Props) {
           <span className="text-fg-1">
             {agg.currentValue !== null ? fmtUSD(agg.currentValue) : '—'}
           </span>
+          {agg.currentValue === null && (
+            <span className="text-fg-3 text-[10px]">price unavailable</span>
+          )}
         </div>
         <div className="flex flex-col items-end gap-[2px]">
           <span className="text-fg-3 text-[10px] uppercase tracking-wide">pnl</span>

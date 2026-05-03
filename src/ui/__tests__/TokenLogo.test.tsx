@@ -17,4 +17,10 @@ describe('TokenLogo', () => {
     expect(screen.queryByRole('img')).toBeNull();
     expect(screen.getByText('B')).toBeDefined();
   });
+
+  it('uses explicit src prop instead of CoinCap URL', () => {
+    render(<TokenLogo symbol="BTC" src="https://example.com/btc.png" />);
+    const img = screen.getByRole('img');
+    expect(img).toHaveAttribute('src', 'https://example.com/btc.png');
+  });
 });

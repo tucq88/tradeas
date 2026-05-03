@@ -3,6 +3,7 @@ import { fmtUSD, fmtSigned, fmtNum } from '@/lib/format';
 
 export type Slice = {
   asset: string;
+  image?: string;
   currentValue: number;
   pctOfBook: number;
   unrealizedPnl: number | null;

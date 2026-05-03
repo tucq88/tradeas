@@ -1,8 +1,9 @@
 import type { SpotLot } from '@/data/types';
-import { toBinancePair } from '@/lib/symbols';
 
 export type AssetAgg = {
   asset: string;
+  coingecko_id: string | null;
+  image?: string;
   weightedAvgCost: number;
   totalInvested: number;
   currentValue: number | null;
@@ -11,7 +12,10 @@ export type AssetAgg = {
   lots: SpotLot[];
 };
 
-export function aggregateWip(wip: SpotLot[], priceMap: Record<string, number>): AssetAgg[] {
+export function aggregateWip(
+  wip: SpotLot[],
+  priceMap: Record<string, { price: number; image: string } | null>,
+): AssetAgg[] {
   const byAsset = new Map<string, SpotLot[]>();
   for (const lot of wip) {
     const arr = byAsset.get(lot.asset) ?? [];
@@ -23,12 +27,25 @@ export function aggregateWip(wip: SpotLot[], priceMap: Record<string, number>): 
     const totalAmount = lots.reduce((s, l) => s + Number(l.amount), 0);
     const totalInvested = lots.reduce((s, l) => s + Number(l.cost_usd), 0);
     const weightedAvgCost = totalAmount > 0 ? totalInvested / totalAmount : 0;
-    const spotPrice = priceMap[toBinancePair(asset)];
-    const currentValue = spotPrice !== undefined ? totalAmount * spotPrice : null;
+    const coingecko_id = lots[0].coingecko_id ?? null;
+    const priceData = coingecko_id !== null ? priceMap[coingecko_id] : null;
+    const spotPrice = priceData?.price ?? null;
+    const image = priceData?.image;
+    const currentValue = spotPrice !== null ? totalAmount * spotPrice : null;
     const unrealizedPnl = currentValue !== null ? currentValue - totalInvested : null;
     const pctDelta =
       unrealizedPnl !== null ? (totalInvested > 0 ? unrealizedPnl / totalInvested : 0) : null;
-    return { asset, weightedAvgCost, totalInvested, currentValue, unrealizedPnl, pctDelta, lots };
+    return {
+      asset,
+      coingecko_id,
+      image,
+      weightedAvgCost,
+      totalInvested,
+      currentValue,
+      unrealizedPnl,
+      pctDelta,
+      lots,
+    };
   });
 }
 

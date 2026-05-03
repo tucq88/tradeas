@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-type Props = { symbol: string };
+type Props = { symbol: string; src?: string };
 
-export function TokenLogo({ symbol }: Props) {
+export function TokenLogo({ symbol, src: srcOverride }: Props) {
   const [failed, setFailed] = useState(false);
   const upper = symbol.toUpperCase();
-  const src = `https://assets.coincap.io/assets/icons/${upper.toLowerCase()}@2x.png`;
+  const src = srcOverride ?? `https://assets.coincap.io/assets/icons/${upper.toLowerCase()}@2x.png`;
 
   if (failed) {
     return (

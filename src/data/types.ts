@@ -9,9 +9,12 @@ export type SpotLot = {
   status: 'wip' | 'done';
   exit_price: number | null;
   exit_date: string | null;
+  coingecko_id: string | null;
 };
 
-export type SpotLotInput = Omit<SpotLot, 'id' | 'created_at'>;
+export type SpotLotInput = Omit<SpotLot, 'id' | 'created_at' | 'coingecko_id'> & {
+  coingecko_id?: string | null;
+};
 export type SpotLotPatch = Partial<Omit<SpotLot, 'id' | 'created_at'>>;
 
 export type PerpPosition = {

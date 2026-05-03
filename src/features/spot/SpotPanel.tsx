@@ -2,12 +2,14 @@ import { useState, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { spotLots } from '@/data/spotLots';
 import type { SpotLot } from '@/data/types';
-import { useSpotPrices } from '@/data/hooks/useSpotPrice';
+import { useCoinList } from '@/data/hooks/useCoinList';
+import { useCoingeckoPrices } from '@/data/hooks/useCoingeckoPrices';
 import { useLastRefreshed } from '@/data/hooks/useLastRefreshed';
-import { toBinancePair } from '@/lib/symbols';
 import { parseCsv, serializeLots, downloadCsv } from '@/lib/csv';
 import type { ParseResult } from '@/lib/csv';
 import { aggregateWip } from './aggregate';
+import { useCoingeckoBackfill } from './useCoingeckoBackfill';
+import { UnmappedAssetBanner } from './UnmappedAssetBanner';
 import { Card } from '@/ui/Card';
 import { Button } from '@/ui/Button';
 import { Tabs } from '@/ui/Tabs';
@@ -38,18 +40,24 @@ export function SpotPanel() {
     queryFn: () => spotLots.list(),
   });
 
+  const { data: coinList } = useCoinList();
+
   const wip = lots.filter((l) => l.status === 'wip');
   const done = lots.filter((l) => l.status === 'done');
 
-  const uniquePairs = [...new Set(wip.map((l) => toBinancePair(l.asset)))];
-  const { data: priceMap = {} } = useSpotPrices(uniquePairs);
+  const uniqueIds = [...new Set(
+    wip.map((l) => l.coingecko_id).filter((id): id is string => id !== null),
+  )];
+  const { data: priceMap = {} } = useCoingeckoPrices(uniqueIds);
+  const heldIds = uniqueIds;
 
   const lastRefreshed = useLastRefreshed();
   const wipAggs = aggregateWip(wip, priceMap);
+  const { unresolved } = useCoingeckoBackfill(wip);
 
   const handleRefresh = () => {
     void qc.invalidateQueries({ queryKey: ['spot-lots'] });
-    void qc.invalidateQueries({ queryKey: ['binance', 'spot'] });
+    void qc.invalidateQueries({ queryKey: ['coingecko', 'prices'] });
   };
 
   const lastLabel = lastRefreshed
@@ -88,19 +96,14 @@ export function SpotPanel() {
     reader.onload = (ev) => {
       const text = ev.target?.result;
       if (typeof text !== 'string') return;
-      const result = parseCsv(text);
-      setPreview(result);
+      setPreview(parseCsv(text));
     };
     reader.readAsText(file);
   };
 
-  const resetFileInput = () => {
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
   const handleModalClose = () => {
     setPreview(null);
-    resetFileInput();
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   return (
@@ -123,7 +126,8 @@ export function SpotPanel() {
                 <Button onClick={() => fileInputRef.current?.click()}>import</Button>
                 <Button onClick={handleExport} disabled={lots.length === 0}>export</Button>
               </div>
-              <LotForm />
+              <UnmappedAssetBanner lots={unresolved} coinList={coinList} heldIds={heldIds} />
+              <LotForm heldIds={heldIds} />
               {wip.length === 0 && (
                 <p className="text-fg-3 text-[13px]">no lots yet — add your first above</p>
               )}
@@ -145,7 +149,7 @@ export function SpotPanel() {
                       onToggle={() => toggleCollapse(agg.asset)}
                     />
                     {!isCollapsed && agg.lots.map((lot) => (
-                      <LotRow key={lot.id} lot={lot} />
+                      <LotRow key={lot.id} lot={lot} heldIds={heldIds} />
                     ))}
                   </div>
                 );

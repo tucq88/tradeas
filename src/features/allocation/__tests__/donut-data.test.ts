@@ -5,6 +5,7 @@ import type { AssetAgg } from '@/features/spot/aggregate';
 function makeAgg(asset: string, currentValue: number | null, unrealizedPnl: number | null = null): AssetAgg {
   return {
     asset,
+    coingecko_id: null,
     weightedAvgCost: 0,
     totalInvested: 0,
     currentValue,
