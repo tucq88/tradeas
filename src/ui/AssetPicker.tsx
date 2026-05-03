@@ -5,7 +5,8 @@ import { TokenLogo } from './TokenLogo';
 type Props = {
   coinList: Map<string, CoinListEntry> | undefined;
   heldIds: string[];
-  onSelect: (entry: CoinListEntry) => void;
+  value: CoinListEntry | null;
+  onChange: (entry: CoinListEntry | null) => void;
   placeholder?: string;
 };
 
@@ -40,12 +41,23 @@ function buildOptions(
   return { held, all: all.slice(0, 100) };
 }
 
-export function AssetPicker({ coinList, heldIds, onSelect, placeholder = 'Search asset…' }: Props) {
-  const [query, setQuery] = useState('');
+export function AssetPicker({ coinList, heldIds, value, onChange, placeholder = 'Search asset…' }: Props) {
+  const selectedSymbol = value?.symbol.toUpperCase() ?? '';
+  const [query, setQuery] = useState(selectedSymbol);
   const [open, setOpen] = useState(false);
   const [cursor, setCursor] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastSelectedSymbol = useRef(selectedSymbol);
+
+  // Sync query when parent's value changes externally (e.g. form reset via remount is handled
+  // by pickerKey, but also covers programmatic value changes).
+  useEffect(() => {
+    if (selectedSymbol !== lastSelectedSymbol.current) {
+      lastSelectedSymbol.current = selectedSymbol;
+      setQuery(selectedSymbol);
+    }
+  }, [selectedSymbol]);
 
   const options = buildOptions(coinList, heldIds, query);
   const flat = [...options.held, ...options.all];
@@ -63,13 +75,22 @@ export function AssetPicker({ coinList, heldIds, onSelect, placeholder = 'Search
 
   const commit = useCallback(
     (entry: CoinListEntry) => {
-      onSelect(entry);
-      setQuery('');
+      const sym = entry.symbol.toUpperCase();
+      lastSelectedSymbol.current = sym;
+      onChange(entry);
+      setQuery(sym);
       setOpen(false);
       setCursor(-1);
     },
-    [onSelect],
+    [onChange],
   );
+
+  const handleQueryChange = (next: string) => {
+    setQuery(next);
+    setOpen(true);
+    setCursor(-1);
+    if (value && next !== selectedSymbol) onChange(null);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!open) {
@@ -101,7 +122,7 @@ export function AssetPicker({ coinList, heldIds, onSelect, placeholder = 'Search
         className="w-full bg-bg-1 border border-border-1 rounded-sm px-2 py-1 text-[12px] text-fg-1 font-mono placeholder:text-fg-3 focus:outline-none focus:border-border-2"
         placeholder={placeholder}
         value={query}
-        onChange={(e) => { setQuery(e.target.value); setOpen(true); setCursor(-1); }}
+        onChange={(e) => handleQueryChange(e.target.value)}
         onFocus={() => setOpen(true)}
         onKeyDown={handleKeyDown}
       />
@@ -152,7 +173,7 @@ function PickerRow({
       className={`flex items-center gap-2 px-2 py-1.5 cursor-pointer ${active ? 'bg-bg-2' : 'hover:bg-bg-2'}`}
       onPointerDown={(e) => { e.preventDefault(); onSelect(entry); }}
     >
-      <TokenLogo symbol={entry.symbol} src={entry.image} />
+      <TokenLogo symbol={entry.symbol} />
       <span className="font-mono font-semibold text-fg-1 text-[11px]">
         {entry.symbol.toUpperCase()}
       </span>

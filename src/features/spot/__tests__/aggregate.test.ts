@@ -98,6 +98,29 @@ describe('aggregateWip', () => {
     const [agg] = aggregateWip(lots, { bitcoin: { price: 50000, image: 'https://img.cg/btc.png' } });
     expect(agg.image).toBe('https://img.cg/btc.png');
   });
+
+  it('keeps lots with same symbol but different coingecko_id in separate buckets', () => {
+    const lots = [
+      makeLot({ id: '1', asset: 'UNI', coingecko_id: 'uniswap', amount: 10, cost_usd: 100 }),
+      makeLot({ id: '2', asset: 'UNI', coingecko_id: 'uni-v2', amount: 5, cost_usd: 50 }),
+    ];
+    const aggs = aggregateWip(lots, { uniswap: P(10), 'uni-v2': P(20) });
+    expect(aggs).toHaveLength(2);
+    const a = aggs.find((x) => x.coingecko_id === 'uniswap')!;
+    const b = aggs.find((x) => x.coingecko_id === 'uni-v2')!;
+    expect(a.totalAmount).toBe(10);
+    expect(b.totalAmount).toBe(5);
+  });
+
+  it('groups by uppercased symbol when coingecko_id is null', () => {
+    const lots = [
+      makeLot({ id: '1', asset: 'btc', coingecko_id: null, amount: 1, cost_usd: 50000 }),
+      makeLot({ id: '2', asset: 'BTC', coingecko_id: null, amount: 1, cost_usd: 60000 }),
+    ];
+    const aggs = aggregateWip(lots, {});
+    expect(aggs).toHaveLength(1);
+    expect(aggs[0].totalAmount).toBe(2);
+  });
 });
 
 describe('aggregateDone', () => {

@@ -73,9 +73,16 @@ export function LotRow({ lot, heldIds }: Props) {
     (f: keyof typeof editForm) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setEditForm((s) => ({ ...s, [f]: e.target.value }));
 
-  const handleAssetSelect = (entry: CoinListEntry) => {
+  const handleAssetChange = (entry: CoinListEntry | null) => {
+    if (!entry) {
+      setEditForm((s) => ({ ...s, coingecko_id: null }));
+      return;
+    }
     setEditForm((s) => ({ ...s, asset: entry.symbol.toUpperCase(), coingecko_id: entry.id }));
   };
+
+  const editEntry: CoinListEntry | null =
+    editForm.coingecko_id && coinList ? coinList.get(editForm.coingecko_id) ?? null : null;
 
   const setD =
     (f: keyof typeof doneForm) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -99,7 +106,8 @@ export function LotRow({ lot, heldIds }: Props) {
           <AssetPicker
             coinList={coinList}
             heldIds={heldIds}
-            onSelect={handleAssetSelect}
+            value={editEntry}
+            onChange={handleAssetChange}
             placeholder={editForm.asset || 'asset'}
           />
           <Input type="number" value={editForm.amount} onChange={setE('amount')} step="any" min="0" />

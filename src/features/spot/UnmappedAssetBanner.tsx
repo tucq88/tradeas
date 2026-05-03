@@ -15,7 +15,8 @@ export function UnmappedAssetBanner({ lots, coinList, heldIds }: Props) {
 
   if (lots.length === 0) return null;
 
-  const handleSelect = (lot: SpotLot, entry: CoinListEntry) => {
+  const handleChange = (lot: SpotLot, entry: CoinListEntry | null) => {
+    if (!entry) return;
     void spotLots.update(lot.id, { coingecko_id: entry.id }).then(() => {
       void qc.invalidateQueries({ queryKey: ['spot-lots'] });
     });
@@ -33,7 +34,8 @@ export function UnmappedAssetBanner({ lots, coinList, heldIds }: Props) {
           <AssetPicker
             coinList={coinList}
             heldIds={heldIds}
-            onSelect={(entry) => handleSelect(lot, entry)}
+            value={null}
+            onChange={(entry) => handleChange(lot, entry)}
           />
         </div>
       ))}

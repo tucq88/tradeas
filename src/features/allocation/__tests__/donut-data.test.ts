@@ -6,6 +6,7 @@ function makeAgg(asset: string, currentValue: number | null, unrealizedPnl: numb
   return {
     asset,
     coingecko_id: null,
+    totalAmount: 0,
     weightedAvgCost: 0,
     totalInvested: 0,
     currentValue,

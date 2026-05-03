@@ -53,32 +53,42 @@ export function AllocationPanel() {
   const unavailableAssets = aggs.filter((a) => a.currentValue === null).map((a) => a.asset);
   const slices = computeSlices(aggs);
   const totalValue = slices.reduce((s, sl) => s + sl.currentValue, 0);
-  const isEmpty = slices.length === 0;
+  const hasWip = wip.length > 0;
+  const hasSlices = slices.length > 0;
+  const allUnresolved = hasWip && !hasSlices;
 
   const handleRefresh = () => {
     void qc.invalidateQueries({ queryKey: ['spot-lots'] });
     void qc.invalidateQueries({ queryKey: ['coingecko', 'prices'] });
   };
 
-  const cardAction = isEmpty ? (
-    <Button onClick={handleRefresh}>refresh</Button>
-  ) : (
+  const cardAction = hasSlices ? (
     <div className="flex items-center gap-2">
       <span className="font-mono text-[13px] text-fg-1 tabular-nums">{fmtUSD(totalValue)}</span>
       <Button onClick={handleRefresh}>refresh</Button>
     </div>
+  ) : (
+    <Button onClick={handleRefresh}>refresh</Button>
   );
 
   return (
     <Card title="allocation" action={cardAction}>
       {isLoading && <p className="text-fg-3 text-[13px]">loading…</p>}
       {isError && <p className="text-loss text-[13px]">error loading lots</p>}
-      {!isLoading && !isError && isEmpty && (
+      {!isLoading && !isError && !hasWip && (
         <p className="text-fg-3 text-[13px]">
           no WIP lots yet — add a lot in spot tracker
         </p>
       )}
-      {!isLoading && !isError && !isEmpty && (
+      {!isLoading && !isError && allUnresolved && (
+        <div className="flex flex-col gap-1 text-[13px]">
+          <p className="text-fg-3">
+            {unavailableAssets.length} asset{unavailableAssets.length !== 1 ? 's' : ''} · prices unavailable
+          </p>
+          <p className="text-fg-3 text-[11px]">{unavailableAssets.join(', ')}</p>
+        </div>
+      )}
+      {!isLoading && !isError && hasSlices && (
         <>
           <DonutChart
             slices={slices}

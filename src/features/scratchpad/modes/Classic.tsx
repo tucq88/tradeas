@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Input } from '@/ui/Input';
 import { MetricRow } from '@/ui/MetricRow';
 import { Slider } from '@/ui/Slider';
-import { InfoTooltip } from '@/ui/InfoTooltip';
 import { fmtUSD, fmtNum, fmtPrice, fmtSigned } from '@/lib/format';
 import { liqPrice, liqDistancePct, DEFAULT_MMR } from '@/lib/liq';
+import { useLiqPreview } from '../lib/useLiqPreview';
+import { LiqPreview } from '../components/LiqPreview';
 import type { ScratchpadCtx } from '../registry';
 
 type Inputs = {
@@ -63,35 +64,17 @@ export function computeClassic({ side, entry, stop, leverage, balance, riskPct }
 
 const D = '—';
 
-function getErrors(side: 'long' | 'short', entry: string, stop: string, leverage: string): string[] {
-  const errors: string[] = [];
-  const entryNum = parseFloat(entry);
-  const stopNum = parseFloat(stop);
-  const levNum = parseFloat(leverage);
-  if (entry !== '' && (isNaN(entryNum) || entryNum <= 0)) errors.push('Entry price must be > 0');
-  if (leverage !== '' && (isNaN(levNum) || levNum <= 0)) errors.push('Leverage must be > 0');
-  if (
-    entry !== '' && stop !== '' &&
-    !isNaN(entryNum) && entryNum > 0 &&
-    !isNaN(stopNum) && stopNum > 0
-  ) {
-    if (side === 'long' && stopNum >= entryNum) errors.push('Stop must be below entry for long');
-    if (side === 'short' && stopNum <= entryNum) errors.push('Stop must be above entry for short');
-  }
-  return errors;
-}
-
 export function Classic({ side, balance, riskPct }: ScratchpadCtx) {
   const [entry, setEntry] = useState('');
   const [stop, setStop] = useState('');
   const [leverage, setLeverage] = useState('10');
 
-  const errors = getErrors(side, entry, stop, leverage);
-  const out = errors.length === 0 ? computeClassic({
+  const preview = useLiqPreview({ side, entry, stop, leverage });
+  const out = preview.errors.length === 0 ? computeClassic({
     side,
     entry: parseFloat(entry),
     stop: parseFloat(stop),
-    leverage: parseFloat(leverage),
+    leverage: parseFloat(leverage) || 10,
     balance,
     riskPct,
   }) : null;
@@ -105,55 +88,46 @@ export function Classic({ side, balance, riskPct }: ScratchpadCtx) {
         </div>
         <div className="flex flex-col gap-[6px]">
           <span className="label-caps">stop</span>
-          <Input value={stop} onChange={(e) => setStop(e.target.value)} suffix="USD" placeholder="0.00" />
+          <Input
+            value={stop}
+            onChange={(e) => setStop(e.target.value)}
+            suffix="USD"
+            placeholder="0.00"
+            wrapperClassName={preview.stopBeyondLiq ? 'border-loss' : undefined}
+          />
         </div>
         <div className="col-span-2 flex flex-col gap-[6px]">
           <span className="label-caps">leverage</span>
           <Slider value={parseFloat(leverage) || 10} onChange={(v) => setLeverage(String(v))} />
         </div>
       </div>
-      {errors.length > 0 && (
-        <ul className="flex flex-col gap-1">
-          {errors.map((e) => (
-            <li key={e} className="text-loss text-[11px]">{e}</li>
-          ))}
-        </ul>
-      )}
-      {errors.length === 0 && (
+      <LiqPreview {...preview} />
+      {out && (
         <>
           <div className="border-t border-border-1 pt-2">
-            <MetricRow label="risk" value={out ? fmtUSD(out.riskUsd) : D} />
-            <MetricRow label="qty" value={out ? fmtNum(out.qty, 4) : D} />
-            <MetricRow label="notional" value={out ? fmtUSD(out.notional) : D} />
-            <MetricRow label="margin" value={out ? fmtUSD(out.margin) : D} />
-            <MetricRow
-              label={<><InfoTooltip text="Isolated margin liquidation price using configured MMR. Long: entry × (1 − 1/lev + MMR)" /> liq price</>}
-              value={out ? fmtPrice(out.liq) : D}
-              valueClassName={out ? 'text-loss' : undefined}
-            />
-            <MetricRow
-              label={<><InfoTooltip text="Distance from current entry to liquidation price, as % of entry." /> liq dist</>}
-              value={out ? fmtNum(out.liqDistPct, 2) + '%' : D}
-            />
+            <MetricRow label="risk" value={fmtUSD(out.riskUsd)} />
+            <MetricRow label="qty" value={fmtNum(out.qty, 4)} />
+            <MetricRow label="notional" value={fmtUSD(out.notional)} />
+            <MetricRow label="margin" value={fmtUSD(out.margin)} />
           </div>
           <div className="border-t border-border-1 pt-2">
             <MetricRow
               label="1R target"
-              value={out ? fmtPrice(out.r1) : D}
-              secondary={out ? fmtSigned(out.r1Usd) : undefined}
-              valueClassName={out ? 'text-profit' : undefined}
+              value={out.r1 > 0 ? fmtPrice(out.r1) : D}
+              secondary={out.r1 > 0 ? fmtSigned(out.r1Usd) : undefined}
+              valueClassName={out.r1 > 0 ? 'text-profit' : undefined}
             />
             <MetricRow
               label="2R target"
-              value={out ? fmtPrice(out.r2) : D}
-              secondary={out ? fmtSigned(out.r2Usd) : undefined}
-              valueClassName={out ? 'text-profit' : undefined}
+              value={out.r2 > 0 ? fmtPrice(out.r2) : D}
+              secondary={out.r2 > 0 ? fmtSigned(out.r2Usd) : undefined}
+              valueClassName={out.r2 > 0 ? 'text-profit' : undefined}
             />
             <MetricRow
               label="3R target"
-              value={out ? fmtPrice(out.r3) : D}
-              secondary={out ? fmtSigned(out.r3Usd) : undefined}
-              valueClassName={out ? 'text-profit' : undefined}
+              value={out.r3 > 0 ? fmtPrice(out.r3) : D}
+              secondary={out.r3 > 0 ? fmtSigned(out.r3Usd) : undefined}
+              valueClassName={out.r3 > 0 ? 'text-profit' : undefined}
             />
           </div>
         </>

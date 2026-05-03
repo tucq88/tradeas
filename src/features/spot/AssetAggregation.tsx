@@ -1,5 +1,5 @@
 import type { AssetAgg } from './aggregate';
-import { fmtUSD, fmtPct, fmtSigned, fmtPrice } from '@/lib/format';
+import { fmtUSD, fmtPct, fmtSigned, fmtPrice, fmtNum } from '@/lib/format';
 import { TokenLogo } from '@/ui/TokenLogo';
 
 type Props = {
@@ -35,6 +35,10 @@ export function AssetAggregation({ agg, isCollapsed, onToggle }: Props) {
         </span>
       </button>
       <div className="flex items-center gap-5 font-mono">
+        <div className="flex flex-col items-end gap-[2px]">
+          <span className="text-fg-3 text-[10px] uppercase tracking-wide">amount</span>
+          <span className="text-fg-2">{fmtNum(agg.totalAmount, 4)}</span>
+        </div>
         <div className="flex flex-col items-end gap-[2px]">
           <span className="text-fg-3 text-[10px] uppercase tracking-wide">avg cost</span>
           <span className="text-fg-2">{fmtPrice(agg.weightedAvgCost)}</span>

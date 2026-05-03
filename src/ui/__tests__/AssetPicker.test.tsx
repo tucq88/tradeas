@@ -27,7 +27,7 @@ const coinList = makeCoinList([btc, eth, pepe]);
 describe('AssetPicker', () => {
   it('shows dropdown on focus and lists coins', () => {
     render(
-      <AssetPicker coinList={coinList} heldIds={[]} onSelect={vi.fn()} />,
+      <AssetPicker coinList={coinList} heldIds={[]} value={null} onChange={vi.fn()} />,
     );
     const input = screen.getByRole('textbox');
     fireEvent.focus(input);
@@ -37,23 +37,23 @@ describe('AssetPicker', () => {
 
   it('shows "Your assets" section for heldIds first', () => {
     render(
-      <AssetPicker coinList={coinList} heldIds={['bitcoin']} onSelect={vi.fn()} />,
+      <AssetPicker coinList={coinList} heldIds={['bitcoin']} value={null} onChange={vi.fn()} />,
     );
     fireEvent.focus(screen.getByRole('textbox'));
     expect(screen.getByText('Your assets')).toBeDefined();
     expect(screen.getByText('All coins')).toBeDefined();
   });
 
-  it('calls onSelect when a row is clicked', () => {
-    const onSelect = vi.fn();
-    render(<AssetPicker coinList={coinList} heldIds={[]} onSelect={onSelect} />);
+  it('calls onChange with the entry when a row is clicked', () => {
+    const onChange = vi.fn();
+    render(<AssetPicker coinList={coinList} heldIds={[]} value={null} onChange={onChange} />);
     fireEvent.focus(screen.getByRole('textbox'));
     fireEvent.pointerDown(screen.getByText('Bitcoin'));
-    expect(onSelect).toHaveBeenCalledWith(btc);
+    expect(onChange).toHaveBeenCalledWith(btc);
   });
 
   it('filters coins by query', () => {
-    render(<AssetPicker coinList={coinList} heldIds={[]} onSelect={vi.fn()} />);
+    render(<AssetPicker coinList={coinList} heldIds={[]} value={null} onChange={vi.fn()} />);
     const input = screen.getByRole('textbox');
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: 'pe' } });
@@ -62,7 +62,7 @@ describe('AssetPicker', () => {
   });
 
   it('closes dropdown on Escape', () => {
-    render(<AssetPicker coinList={coinList} heldIds={[]} onSelect={vi.fn()} />);
+    render(<AssetPicker coinList={coinList} heldIds={[]} value={null} onChange={vi.fn()} />);
     const input = screen.getByRole('textbox');
     fireEvent.focus(input);
     expect(screen.getByText('Bitcoin')).toBeDefined();
@@ -71,25 +71,47 @@ describe('AssetPicker', () => {
   });
 
   it('selects with Enter after keyboard navigation', () => {
-    const onSelect = vi.fn();
-    render(<AssetPicker coinList={coinList} heldIds={[]} onSelect={onSelect} />);
+    const onChange = vi.fn();
+    render(<AssetPicker coinList={coinList} heldIds={[]} value={null} onChange={onChange} />);
     const input = screen.getByRole('textbox');
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith(btc);
   });
 
   it('Enter inside open dropdown does not submit outer form', () => {
     const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
     render(
       <form onSubmit={onSubmit}>
-        <AssetPicker coinList={coinList} heldIds={[]} onSelect={vi.fn()} />
+        <AssetPicker coinList={coinList} heldIds={[]} value={null} onChange={vi.fn()} />
       </form>,
     );
     const input = screen.getByRole('textbox');
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('shows the selected value in the input', () => {
+    render(<AssetPicker coinList={coinList} heldIds={[]} value={btc} onChange={vi.fn()} />);
+    expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe('BTC');
+  });
+
+  it('clears parent value when typing diverges from selection', () => {
+    const onChange = vi.fn();
+    render(<AssetPicker coinList={coinList} heldIds={[]} value={btc} onChange={onChange} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'ETH' } });
+    expect(onChange).toHaveBeenCalledWith(null);
+  });
+
+  it('does not clear parent value when typing matches selection (no-op edit)', () => {
+    const onChange = vi.fn();
+    render(<AssetPicker coinList={coinList} heldIds={[]} value={btc} onChange={onChange} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'BTC' } });
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

@@ -3,11 +3,17 @@ import { cn } from "@/lib/utils";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   suffix?: string;
+  wrapperClassName?: string;
 };
 
-export function Input({ suffix, className, ...rest }: InputProps) {
+export function Input({ suffix, className, wrapperClassName, ...rest }: InputProps) {
   return (
-    <label className="flex items-center gap-2 bg-bg-inset border border-border-1 rounded-sm px-[10px] h-[34px] focus-within:border-border-emph focus-within:shadow-[0_0_0_2px_rgba(91,157,255,0.40)] transition-colors">
+    <label
+      className={cn(
+        "flex items-center gap-2 bg-bg-inset border border-border-1 rounded-sm px-[10px] h-[34px] focus-within:border-border-emph focus-within:shadow-[0_0_0_2px_rgba(91,157,255,0.40)] transition-colors",
+        wrapperClassName,
+      )}
+    >
       <input
         {...rest}
         className={cn(

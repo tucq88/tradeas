@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { spotLots } from '@/data/spotLots';
 import type { SpotLot, SpotLotInput } from '@/data/types';
@@ -9,10 +9,22 @@ import { Button } from '@/ui/Button';
 import { AssetPicker } from '@/ui/AssetPicker';
 import { numStr } from '@/lib/format';
 
+function maskDate(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 4) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+  return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6)}`;
+}
+
+function isValidISODate(s: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const d = new Date(s + 'T00:00:00Z');
+  return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
+}
+
 type FormState = {
   date: string;
-  asset: string;
-  coingecko_id: string | null;
+  selectedEntry: CoinListEntry | null;
   entry_price: string;
   amount: string;
   cost_usd: string;
@@ -21,8 +33,7 @@ type FormState = {
 
 const EMPTY: FormState = {
   date: '',
-  asset: '',
-  coingecko_id: null,
+  selectedEntry: null,
   entry_price: '',
   amount: '',
   cost_usd: '',
@@ -35,10 +46,11 @@ export function LotForm({ heldIds }: Props) {
   const qc = useQueryClient();
   const { data: coinList } = useCoinList();
   const [form, setForm] = useState<FormState>(EMPTY);
+  const [pickerKey, setPickerKey] = useState(0);
 
-  const handleAssetSelect = (entry: CoinListEntry) => {
-    setForm((f) => ({ ...f, asset: entry.symbol.toUpperCase(), coingecko_id: entry.id }));
-  };
+  const handleAssetChange = useCallback((entry: CoinListEntry | null) => {
+    setForm((f) => ({ ...f, selectedEntry: entry }));
+  }, []);
 
   const handleEntryPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const ep = e.target.value;
@@ -80,20 +92,29 @@ export function LotForm({ heldIds }: Props) {
       qc.setQueryData<SpotLot[]>(['spot-lots'], (old) => [newLot, ...(old ?? [])]);
       void qc.invalidateQueries({ queryKey: ['spot-lots'] });
       setForm(EMPTY);
+      setPickerKey((k) => k + 1);
     },
   });
 
+  const dateInvalid = form.date !== '' && !isValidISODate(form.date);
+  const submitDisabled =
+    mutation.isPending ||
+    !form.selectedEntry ||
+    !isValidISODate(form.date) ||
+    isNaN(parseFloat(form.amount)) ||
+    isNaN(parseFloat(form.entry_price)) ||
+    isNaN(parseFloat(form.cost_usd));
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitDisabled || !form.selectedEntry) return;
     const amount = parseFloat(form.amount);
     const entry_price = parseFloat(form.entry_price);
     const cost_usd = parseFloat(form.cost_usd);
-    if (!form.date || !form.asset.trim() || isNaN(amount) || isNaN(entry_price) || isNaN(cost_usd))
-      return;
     mutation.mutate({
       date: form.date,
-      asset: form.asset.trim().toUpperCase(),
-      coingecko_id: form.coingecko_id,
+      asset: form.selectedEntry.symbol.toUpperCase(),
+      coingecko_id: form.selectedEntry.id,
       amount,
       entry_price,
       cost_usd,
@@ -107,14 +128,18 @@ export function LotForm({ heldIds }: Props) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
       <div className="grid grid-cols-5 gap-2">
         <Input
-          type="date"
+          type="text"
           value={form.date}
-          onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+          onChange={(e) => setForm((f) => ({ ...f, date: maskDate(e.target.value) }))}
+          placeholder="YYYY-MM-DD"
+          maxLength={10}
         />
         <AssetPicker
+          key={pickerKey}
           coinList={coinList}
           heldIds={heldIds}
-          onSelect={handleAssetSelect}
+          value={form.selectedEntry}
+          onChange={handleAssetChange}
           placeholder="BTC"
         />
         <Input
@@ -142,10 +167,13 @@ export function LotForm({ heldIds }: Props) {
           min="0"
         />
       </div>
+      {dateInvalid && (
+        <p className="text-loss text-[11px]">date must be a valid YYYY-MM-DD</p>
+      )}
       {mutation.isError && (
         <p className="text-loss text-[11px]">error saving lot — try again</p>
       )}
-      <Button type="submit" variant="primary" disabled={mutation.isPending || !form.coingecko_id}>
+      <Button type="submit" variant="primary" disabled={submitDisabled}>
         {mutation.isPending ? 'adding…' : 'add lot'}
       </Button>
     </form>

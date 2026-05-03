@@ -4,6 +4,7 @@ export type AssetAgg = {
   asset: string;
   coingecko_id: string | null;
   image?: string;
+  totalAmount: number;
   weightedAvgCost: number;
   totalInvested: number;
   currentValue: number | null;
@@ -16,18 +17,20 @@ export function aggregateWip(
   wip: SpotLot[],
   priceMap: Record<string, { price: number; image: string } | null>,
 ): AssetAgg[] {
-  const byAsset = new Map<string, SpotLot[]>();
+  const byBucket = new Map<string, SpotLot[]>();
   for (const lot of wip) {
-    const arr = byAsset.get(lot.asset) ?? [];
+    const key = lot.coingecko_id ?? lot.asset.toUpperCase();
+    const arr = byBucket.get(key) ?? [];
     arr.push(lot);
-    byAsset.set(lot.asset, arr);
+    byBucket.set(key, arr);
   }
 
-  return Array.from(byAsset.entries()).map(([asset, lots]) => {
+  return Array.from(byBucket.values()).map((lots) => {
+    const asset = lots[0].asset;
     const totalAmount = lots.reduce((s, l) => s + Number(l.amount), 0);
     const totalInvested = lots.reduce((s, l) => s + Number(l.cost_usd), 0);
     const weightedAvgCost = totalAmount > 0 ? totalInvested / totalAmount : 0;
-    const coingecko_id = lots[0].coingecko_id ?? null;
+    const coingecko_id = lots.find((l) => l.coingecko_id != null)?.coingecko_id ?? null;
     const priceData = coingecko_id !== null ? priceMap[coingecko_id] : null;
     const spotPrice = priceData?.price ?? null;
     const image = priceData?.image;
@@ -39,6 +42,7 @@ export function aggregateWip(
       asset,
       coingecko_id,
       image,
+      totalAmount,
       weightedAvgCost,
       totalInvested,
       currentValue,
