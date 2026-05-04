@@ -1,5 +1,6 @@
-import type { VaultPriceSnapshot } from '@/data/ledger/types';
 import { D } from '@/lib/decimal';
+
+type SnapshotLike = { id: string; snapshot_at: string };
 
 /**
  * Returns the most recent snapshot whose snapshot_at <= asOf, or null when
@@ -9,10 +10,10 @@ import { D } from '@/lib/decimal';
  * Tie-break: highest snapshot_at wins. If two snapshots share the same
  * snapshot_at the one with the lexicographically larger id wins (stable sort).
  */
-export function latestAtOrBefore(
-  snapshots: VaultPriceSnapshot[],
+export function latestAtOrBefore<T extends SnapshotLike>(
+  snapshots: T[],
   asOf: string,
-): VaultPriceSnapshot | null {
+): T | null {
   const candidates = snapshots.filter((s) => s.snapshot_at <= asOf);
   if (candidates.length === 0) return null;
 

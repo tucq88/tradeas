@@ -31,6 +31,24 @@ export type VaultPositionState = {
 };
 
 // -------------------------------------------------------------------
+// Agent position state — result of computeAgentPosition()
+// -------------------------------------------------------------------
+
+export type AgentPositionState = {
+  /** Sum of all deposit transaction amounts */
+  totalDeposited: Decimal;
+  /** Sum of all withdrawal transaction amounts */
+  totalWithdrawn: Decimal;
+  /** equity_usdc from the latest equity snapshot at or before asOf */
+  currentValue: Decimal | null;
+  /** snapshot_at of the equity snapshot used for currentValue */
+  latestEquityAt: string | null;
+  /** lifetimePnl = currentValue + totalWithdrawn - totalDeposited; null when currentValue is null */
+  lifetimePnl: Decimal | null;
+  warnings: AccountingWarning[];
+};
+
+// -------------------------------------------------------------------
 // Withdrawal classification — profit-first waterfall
 // -------------------------------------------------------------------
 
