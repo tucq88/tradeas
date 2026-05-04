@@ -19,10 +19,10 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'imports', label: 'Imports' },
 ];
 
-function TabView({ tab }: { tab: TabId }) {
+function TabView({ tab, onNavigate }: { tab: TabId; onNavigate: (t: TabId) => void }) {
   switch (tab) {
     case 'portfolio': return <PortfolioView />;
-    case 'positions': return <PositionsView />;
+    case 'positions': return <PositionsView onNavigate={(t) => onNavigate(t as TabId)} />;
     case 'weekly': return <WeeklyView />;
     case 'profit-bank': return <ProfitBankView />;
     case 'transactions': return <TransactionsView />;
@@ -53,7 +53,7 @@ export function LedgerPanel() {
           </button>
         ))}
       </nav>
-      <TabView tab={activeTab} />
+      <TabView tab={activeTab} onNavigate={setActiveTab} />
     </div>
   );
 }
