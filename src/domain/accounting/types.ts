@@ -49,6 +49,37 @@ export type AgentPositionState = {
 };
 
 // -------------------------------------------------------------------
+// Weekly review row — result of calculateWeeklyReview()
+// -------------------------------------------------------------------
+
+export type WeekStartDay = 'sunday' | 'monday';
+
+export type WeeklyReviewRow = {
+  accountId: string;
+  productId: string;
+  productType: 'vault' | 'agent';
+  /** Position value at week start; null when snapshot missing */
+  startValue: Decimal | null;
+  /** Position value at week end (= asOf); null when snapshot missing */
+  endValue: Decimal | null;
+  /** Sum of deposit amounts in [weekStart, weekEnd) */
+  weeklyDeposits: Decimal;
+  /** Sum of withdrawal amounts in [weekStart, weekEnd) */
+  weeklyWithdrawals: Decimal;
+  /** endValue + weeklyWithdrawals - weeklyDeposits - startValue; null when start/end missing */
+  weeklyPnl: Decimal | null;
+  /** weeklyPnl / startValue; null when start/end missing or startValue is zero */
+  weeklyRoi: Decimal | null;
+  /** max(0, min(weeklyPnl, currentValue - totalDeposited)); null when weeklyPnl is null */
+  suggestedTpUsdc: Decimal | null;
+  /** suggestedTpUsdc / latestSharePrice; null for agent rows or when share price missing */
+  suggestedTpShares: Decimal | null;
+  /** Lifetime PnL from the position state */
+  lifetimePnl: Decimal | null;
+  warnings: AccountingWarning[];
+};
+
+// -------------------------------------------------------------------
 // Withdrawal classification — profit-first waterfall
 // -------------------------------------------------------------------
 

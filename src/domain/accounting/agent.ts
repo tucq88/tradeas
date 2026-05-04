@@ -49,7 +49,8 @@ export function computeAgentPosition(
     }
   }
 
-  const snapshotsBeforeAsOf = equitySnapshots.filter((s) => s.snapshot_at <= asOf);
+  const asOfMs = new Date(asOf).getTime();
+  const snapshotsBeforeAsOf = equitySnapshots.filter((s) => new Date(s.snapshot_at).getTime() <= asOfMs);
   const latestSnapshot = latestAtOrBefore(snapshotsBeforeAsOf, asOf);
 
   const warnings: AccountingWarning[] = [];

@@ -14,13 +14,14 @@ export function latestAtOrBefore<T extends SnapshotLike>(
   snapshots: T[],
   asOf: string,
 ): T | null {
-  const candidates = snapshots.filter((s) => s.snapshot_at <= asOf);
+  const asOfMs = new Date(asOf).getTime();
+  const candidates = snapshots.filter((s) => new Date(s.snapshot_at).getTime() <= asOfMs);
   if (candidates.length === 0) return null;
 
   candidates.sort((a, b) => {
-    if (a.snapshot_at !== b.snapshot_at) {
-      return a.snapshot_at < b.snapshot_at ? 1 : -1; // descending
-    }
+    const tA = new Date(a.snapshot_at).getTime();
+    const tB = new Date(b.snapshot_at).getTime();
+    if (tA !== tB) return tB - tA; // descending by time
     return a.id < b.id ? 1 : -1; // descending by id as tiebreak
   });
 
