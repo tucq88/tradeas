@@ -4,10 +4,14 @@ import { SettingsDrawer } from '@/features/settings/SettingsDrawer';
 import { PerpPanel } from '@/features/perp/PerpPanel';
 import { SpotPanel } from '@/features/spot/SpotPanel';
 import { AllocationPanel } from '@/features/allocation/AllocationPanel';
+import { LedgerPanel } from '@/features/ledger/LedgerPanel';
 import { RefreshAllButton } from '@/components/RefreshAllButton';
+
+type Mode = 'trading' | 'ledger';
 
 export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [mode, setMode] = useState<Mode>('trading');
 
   return (
     /* 1024px: grid stays 12-col; panels scroll internally */
@@ -19,7 +23,33 @@ export default function App() {
         >
           trade<span className="text-accent">a</span>s
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setMode('trading')}
+              className={[
+                'h-7 px-2 text-xs rounded-sm transition-colors',
+                mode === 'trading'
+                  ? 'text-fg-1 bg-bg-inset'
+                  : 'text-fg-3 hover:text-fg-1 hover:bg-bg-inset',
+              ].join(' ')}
+            >
+              Trading
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('ledger')}
+              className={[
+                'h-7 px-2 text-xs rounded-sm transition-colors',
+                mode === 'ledger'
+                  ? 'text-fg-1 bg-bg-inset'
+                  : 'text-fg-3 hover:text-fg-1 hover:bg-bg-inset',
+              ].join(' ')}
+            >
+              Ledger
+            </button>
+          </div>
           <RefreshAllButton />
           <button
             type="button"
@@ -34,20 +64,24 @@ export default function App() {
           </button>
         </div>
       </header>
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-4 row-span-3">
-          <Scratchpad />
+      {mode === 'trading' ? (
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-4 row-span-3">
+            <Scratchpad />
+          </div>
+          <div className="col-span-8">
+            <PerpPanel />
+          </div>
+          <div className="col-span-8">
+            <SpotPanel />
+          </div>
+          <div className="col-span-8">
+            <AllocationPanel />
+          </div>
         </div>
-        <div className="col-span-8">
-          <PerpPanel />
-        </div>
-        <div className="col-span-8">
-          <SpotPanel />
-        </div>
-        <div className="col-span-8">
-          <AllocationPanel />
-        </div>
-      </div>
+      ) : (
+        <LedgerPanel />
+      )}
       <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
