@@ -20,7 +20,8 @@
     "decimal.js": "^10.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwind-merge": "^2.5.5"
+    "tailwind-merge": "^2.5.5",
+    "zod": "^4.4.3"
   },
   "resolutions": {
     "vite": "^7.0.0"
